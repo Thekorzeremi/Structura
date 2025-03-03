@@ -5,10 +5,11 @@ import { MantineProvider } from '@mantine/core';
 export default function App() {
   return <>
   
-      <MantineProvider>
-      
-      <Button variant="filled">Button</Button>
+        <MantineProvider>
+          
+            <Button variant="filled" >Button</Button>
 
-    </MantineProvider>
-</>   
+        </MantineProvider>
+
+    </>   
 }
