@@ -44,7 +44,6 @@ class User
 
     public function __construct()
     {
-        $this->assignments = new ArrayCollection();
         $this->assignemnts = new ArrayCollection();
     }
 
