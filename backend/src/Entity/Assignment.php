@@ -21,7 +21,8 @@ class Assignment
     private ?\DateTimeInterface $end_date = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
-    private ?User $user_id = null;
+    private ?User $user = null;
+
 
     public function getId(): ?int
     {
@@ -54,12 +55,24 @@ class Assignment
 
     public function getUserId(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUserId(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

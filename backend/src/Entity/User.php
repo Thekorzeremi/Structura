@@ -33,9 +33,23 @@ class User
     #[ORM\OneToMany(mappedBy: "user", targetEntity: Assignment::class, cascade: ["persist", "remove"])]
     private Collection $assignments;
 
+    /**
+     * @var Collection<int, Assignment>
+     */
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'user')]
+    private Collection $assignemnts;
+
+    /**
+     * @var Collection<int, Availability>
+     */
+    #[ORM\OneToMany(targetEntity: Availability::class, mappedBy: 'user')]
+    private Collection $availability;
+
     public function __construct()
     {
         $this->assignments = new ArrayCollection();
+        $this->assignemnts = new ArrayCollection();
+        $this->availability = new ArrayCollection();
     }
 
     
@@ -103,6 +117,66 @@ class User
     public function getAssignments(): Collection
     {
         return $this->assignments;
+    }
+
+    /**
+     * @return Collection<int, Assignment>
+     */
+    public function getAssignemnts(): Collection
+    {
+        return $this->assignemnts;
+    }
+
+    public function addAssignemnt(Assignment $assignemnt): static
+    {
+        if (!$this->assignemnts->contains($assignemnt)) {
+            $this->assignemnts->add($assignemnt);
+            $assignemnt->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignemnt(Assignment $assignemnt): static
+    {
+        if ($this->assignemnts->removeElement($assignemnt)) {
+            // set the owning side to null (unless already changed)
+            if ($assignemnt->getUser() === $this) {
+                $assignemnt->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Availability>
+     */
+    public function getAvailability(): Collection
+    {
+        return $this->availability;
+    }
+
+    public function addAvailability(Availability $availability): static
+    {
+        if (!$this->availability->contains($availability)) {
+            $this->availability->add($availability);
+            $availability->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvailability(Availability $availability): static
+    {
+        if ($this->availability->removeElement($availability)) {
+            // set the owning side to null (unless already changed)
+            if ($availability->getUser() === $this) {
+                $availability->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
 }
