@@ -14,11 +14,10 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 
-#[AsController]
 final class UserController extends AbstractController
 {
-    #[Route('/register', name: 'user_register', methods: ['POST'])]
-    public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    #[Route('/api/register', name: 'user_register', methods: ['POST'])]
+    public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, JWTTokenManagerInterface $jwtManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         
@@ -31,37 +30,53 @@ final class UserController extends AbstractController
 
         $entityManager->persist($user);
         $entityManager->flush();
-        
-        return $this->json(['message' => 'User registered successfully'], 201);
-    }
-
-    #[Route('/login', name: 'user_login', methods: ['POST'])]
-    public function login(
-        Request $request,
-        UserProviderInterface $userProvider,
-        UserPasswordHasherInterface $passwordHasher,
-        JWTTokenManagerInterface $jwtManager,
-        RefreshTokenGeneratorInterface $refreshTokenGenerator,
-        RefreshTokenManagerInterface $refreshTokenManager
-    ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
-        $email = $data['email'] ?? '';
-        $password = $data['password'] ?? '';
-
-        $user = $userProvider->loadUserByUsername($email);
-
-        if (!$user || !$passwordHasher->isPasswordValid($user, $password)) {
-            return new JsonResponse(['error' => 'Invalid credentials'], JsonResponse::HTTP_UNAUTHORIZED);
-        }
-
         $token = $jwtManager->create($user);
 
-        $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user, 3600); 
-        $refreshTokenManager->save($refreshToken);
+        return $this->json([
+            'message' => 'User registered successfully',
+            'token' => $token
+            ], 201);
+    }
 
+    ###TEMP LOGIN FUNCTION (error with password auth)
+    #[Route('/api/login', name: 'user_login', methods: ['POST'])]
+    public function login(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        JWTTokenManagerInterface $jwtManager
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+    
+        if (!isset($data['email'], $data['password'])) {
+            return new JsonResponse(['error' => 'Missing email or password'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+    
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+    
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+    
+        if (!$passwordHasher->isPasswordValid($user, $data['password'])) {
+            return new JsonResponse(['error' => 'Invalid password'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+    
+        
+        $token = $jwtManager->create($user);
+    
         return new JsonResponse([
-            'token' => $token,
-            'refresh_token' => $refreshToken->getRefreshToken(),
+            'message' => 'Login successful',
+            'token' => $token
         ], JsonResponse::HTTP_OK);
+    }
+    
+    
+
+    
+    #[Route('/api/hello', name:'', methods: ['POST'])]
+    public function test(): JsonResponse
+    {
+        return $this ->json(['message' => 'Hello World']);
     }
 }

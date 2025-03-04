@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -44,7 +46,6 @@ class User
 
     public function __construct()
     {
-        $this->assignments = new ArrayCollection();
         $this->assignemnts = new ArrayCollection();
     }
 
@@ -155,6 +156,16 @@ class User
         $this->skills = $skills;
 
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email; // Symfony uses this method for authentication
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store temporary sensitive data, clear it here
     }
 
 }
