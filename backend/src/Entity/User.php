@@ -39,17 +39,13 @@ class User
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'user')]
     private Collection $assignemnts;
 
-    /**
-     * @var Collection<int, Availability>
-     */
-    #[ORM\OneToMany(targetEntity: Availability::class, mappedBy: 'user')]
-    private Collection $availability;
+    #[ORM\Column]
+    private array $skills = [];
 
     public function __construct()
     {
         $this->assignments = new ArrayCollection();
         $this->assignemnts = new ArrayCollection();
-        $this->availability = new ArrayCollection();
     }
 
     
@@ -149,32 +145,14 @@ class User
         return $this;
     }
 
-    /**
-     * @return Collection<int, Availability>
-     */
-    public function getAvailability(): Collection
+    public function getSkills(): ?array
     {
-        return $this->availability;
+        return $this->skills;
     }
 
-    public function addAvailability(Availability $availability): static
+    public function setSkills(?array $skills): static
     {
-        if (!$this->availability->contains($availability)) {
-            $this->availability->add($availability);
-            $availability->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvailability(Availability $availability): static
-    {
-        if ($this->availability->removeElement($availability)) {
-            // set the owning side to null (unless already changed)
-            if ($availability->getUser() === $this) {
-                $availability->setUser(null);
-            }
-        }
+        $this->skills = $skills;
 
         return $this;
     }

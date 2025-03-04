@@ -26,6 +26,9 @@ class Worksite
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[ORM\Column]
+    private array $skills = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Worksite
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getSkills(): array
+    {
+        return $this->skills;
+    }
+
+    public function setSkills(array $skills): static
+    {
+        $this->skills = $skills;
 
         return $this;
     }
