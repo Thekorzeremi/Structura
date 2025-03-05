@@ -72,4 +72,43 @@ final class SecurityController extends AbstractController
             return $this->json(['error' => 'Failed to create token'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    #[Route('/api/login_check', name: 'app_login')]
+    public function loginCheck(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, JWTTokenManagerInterface $jwtManager, LoggerInterface $logger): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $this->logger->info('[SecurityController] Login - Data received: ' . print_r($data, true));
+        } catch (\JsonException $e) {
+            $this->logger->error('[SecurityController] Login - Invalid JSON', ['exception' => $e]);
+            return $this->json(['error' => 'Invalid JSON'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!isset($data['email'], $data['password']))
+        {
+            $this->logger->error('[SecurityController] Login - Missing required fields');
+            return $this->json(['error' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+            if (!$user || !$passwordHasher->isPasswordValid($user, $data['password'])) {
+                $this->logger->error('[SecurityController] Login - Invalid credentials');
+                return $this->json(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
+            }
+            $this->logger->info('[SecurityController] Login - User logged in !');
+        } catch (\Exception $e) {
+            $this->logger->error('[SecurityController] Login - Failed to login user', ['exception' => $e]);
+            return $this->json(['error' => 'Failed to login user'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        try {
+            $token = $jwtManager->create($user);
+            $this->logger->info('[SecurityController] Login - Token created !');
+            return $this->json(['token' => $token], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            $this->logger->error('[SecurityController] Login - Failed to create token', ['exception' => $e]);
+            return $this->json(['error' => 'Failed to create token'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
