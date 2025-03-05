@@ -1,4 +1,4 @@
-import { Grid, Paper, Image, Stack, Container } from "@mantine/core";
+import { Grid, Paper, Image, Stack, Title, Container } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../components/Login/LoginForm";
 import RegisterForm from "../components/Register/RegisterForm";
@@ -12,8 +12,7 @@ const AuthPage = ({ type }) => {
         <Grid gutter={0}>
           {/* Partie gauche avec l’image */}
           <Grid.Col span={8} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Image src="/btp_login.png" alt="BTP Login" height="100%" width="100%" fit="cover"radius="md"
- />
+          <Image src="/btp_login.png" alt="BTP Login" height="100%" width="100%" fit="cover"radius="md"/>
           </Grid.Col>
 
           {/* Partie droite avec le formulaire */}
