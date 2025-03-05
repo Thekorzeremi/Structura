@@ -42,6 +42,12 @@ class User
     #[ORM\Column]
     private array $skills = [];
 
+    #[ORM\Column(length: 255)]
+    private ?string $job = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phone = null;
+
     public function __construct()
     {
         $this->assignments = new ArrayCollection();
@@ -153,6 +159,30 @@ class User
     public function setSkills(?array $skills): static
     {
         $this->skills = $skills;
+
+        return $this;
+    }
+
+    public function getJob(): ?string
+    {
+        return $this->job;
+    }
+
+    public function setJob(string $job): static
+    {
+        $this->job = $job;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }
