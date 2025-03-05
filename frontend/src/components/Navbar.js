@@ -31,7 +31,7 @@ export default function Navbar() {
                 }`}
               >
                 <Icon size={20} />
-                <span className="absolute left-10 ml-4 bottom-3.5 px-2 py-1 bg-gray-200 text-black text-sm rounded-sm opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                <span className="absolute left-10 ml-4 bottom-3.5 px-2 py-1 bg-gray-200 text-black text-sm rounded-sm opacity-0 group-hover:opacity-100 transition-all ease-in-out duration-300 delay-[500ms] pointer-events-none whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
@@ -43,6 +43,9 @@ export default function Navbar() {
         <div className="p-3 rounded-xl transition-all duration-200 group relative text-black hover:text-gray-600 hover:cursor-pointer">
           <span onClick={() => setIsDark(!isDark)}>
             {isDark ? <Moon size={20} /> : <Sun size={20} />}
+            <span className="absolute left-10 ml-4 bottom-3.5 px-2 py-1 bg-gray-200 text-black text-sm rounded-sm opacity-0 group-hover:opacity-100 transition-all ease-in-out duration-300 delay-[500ms] pointer-events-none whitespace-nowrap">
+              {isDark ? 'Dark mode' : 'Light mode'}
+            </span>
           </span>
         </div>
         <img className="rounded-full w-[48px] h-[48px]" src="/assets/logo.png" alt="logo" />
