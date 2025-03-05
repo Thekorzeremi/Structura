@@ -7,7 +7,7 @@ export default function Profil_modal({ setIsOpen }) {
     
     const modalItems = [
         { icon: Settings, path: '/settings', name: 'Paramètres' },
-        { icon: LogOut, path: '/logout', name: 'Se deconnecter' },
+        { icon: LogOut, path: '/logout', name: 'Se déconnecter' },
       ];
 
       const profilInfos = [
@@ -25,7 +25,7 @@ export default function Profil_modal({ setIsOpen }) {
               <img className="rounded-full w-[28px] h-[28px]" src="/assets/logo.png" alt="logo" />
               <div className="flex flex-col items-start">
                 <span className="text-black text-sm">{profilInfos.map((info) => info.first_name)} {profilInfos.map((info) => info.last_name)}</span>
-                <span className="text-black text-xs">{profilInfos.map((info) => info.job)}</span>
+                <span className="text-gray-500 text-xs">{profilInfos.map((info) => info.job)}</span>
               </div>
             </div>
             <div className="w-auto ml-4">

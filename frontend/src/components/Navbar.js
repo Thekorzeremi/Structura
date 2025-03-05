@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { House, Calendar, Hammer, Users, Moon, Sun } from 'lucide-react';
-import Profil_modal from './modals/Profil_modal';
+import Profil_modal from './modals/ProfilModal';
 
 export default function Navbar() {
   const location = useLocation();
