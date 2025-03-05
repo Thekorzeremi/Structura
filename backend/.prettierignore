@@ -1,0 +1,6 @@
+/vendor/
+/var/
+/public/bundles/
+/node_modules/
+*.lock
+*.cache
