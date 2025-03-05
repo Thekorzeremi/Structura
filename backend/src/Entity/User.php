@@ -17,19 +17,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 50, unique: true)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 255)]
     private ?string $password = null;
 
     #[ORM\OneToMany(mappedBy: "user", targetEntity: Assignment::class, cascade: ["persist", "remove"])]

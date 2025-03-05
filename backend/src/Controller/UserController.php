@@ -21,6 +21,22 @@ final class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         
+        if ($data === null) {
+            return $this->json(['error' => 'Invalid JSON format'], 400);
+        }
+
+        $requiredFields = ['first_name', 'last_name', 'email', 'password'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field]) || empty($data[$field])) {
+                return $this->json(['error' => sprintf('Missing required field: %s', $field)], 400);
+            }
+        }
+
+        $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+        if ($existingUser) {
+            return $this->json(['error' => 'Email already exists'], 400);
+        }
+        
         $user = new User();
         $user->setFirstName($data['first_name']);
         $user->setLastName($data['last_name']);
