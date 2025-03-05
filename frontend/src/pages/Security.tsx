@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react"
 import axios from 'axios'
+import { useAuth } from '../contexts/AuthContext';
 
 interface UserCredentials {
   email: string;
@@ -14,6 +15,7 @@ interface UserRegistration {
 }
 
 const Security = () => {
+  const { login } = useAuth();
   const [registerMode, setRegisterMode] = useState(false)
   const [formData, setFormData] = useState<UserRegistration>({
     first_name: '',
@@ -66,12 +68,7 @@ const Security = () => {
       console.log('Response data:', response.data)
 
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token)
-        if (rememberMe) {
-          localStorage.setItem('rememberMe', 'true')
-        }
-        // Redirection après connexion réussie
-        window.location.href = '/'
+        login(response.data.token);
       }
     } catch (error: any) {
       console.error('Erreur complète:', error)
