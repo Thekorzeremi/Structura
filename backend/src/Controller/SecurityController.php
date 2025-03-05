@@ -115,7 +115,7 @@ final class SecurityController extends AbstractController
             content: new OA\JsonContent(
                 required: ['email', 'password'],
                 properties: [
-                    new OA\Property(property: 'email', type: 'string', format: 'email'),
+                    new OA\Property(property: 'email', type: 'string'),
                     new OA\Property(property: 'password', type: 'string', format: 'password'),
                 ]
             )
@@ -145,7 +145,7 @@ final class SecurityController extends AbstractController
         }
 
         if (!isset($data['email'], $data['password'])) {
-            $this->logger->error('[SecurityController] Login - Missing required fields');
+            $this->logger->error('[SecurityController] Login - Missing required fields : '.print_r($data, true));
 
             return $this->json(['error' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
         }
