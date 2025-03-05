@@ -15,10 +15,6 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         
-        main:
-            lazy: true
-            provider: users_in_memory
-
         login_auth:
             pattern: ^/api/login
             stateless: true
@@ -29,24 +25,25 @@ security:
                 username_path: email
                 password_path: password
                 provider: app_user_provider
-                
+
         api:
             pattern: ^/api
             stateless: true
-            jwt: ~
             provider: app_user_provider
-
-        # https://symfony.com/doc/current/security.html#the-firewall
-        # https://symfony.com/doc/current/security/impersonating_user.html
-        # switch_user: true
+            jwt: 
+                authenticator: lexik_jwt_authentication.security.jwt_authenticator
+            
+        main:
+            lazy: true
+            provider: app_user_provider
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: PUBLIC_ACCESS } 
-        - { path: ^/api/profile, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/profile, roles: ROLE_USER }
+        - { path: ^/api, roles: ROLE_USER }
 
 when@test:
     security:

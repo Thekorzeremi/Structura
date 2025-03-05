@@ -15,8 +15,15 @@ class UserProfileController extends AbstractController
 
     #[Route('/api/profile/{id}', name: 'get_profile', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function getProfile(int $id, EntityManagerInterface $entityManager): JsonResponse
+    public function getProfile(int $id, EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
+        // Debug lines
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['error' => 'No authenticated user found'], 401);
+        }
+        
+        // Original code
         $user = $entityManager->getRepository(User::class)->find($id);
         if (!$user) {
             return $this->json(['error' => 'User not found'], 404);
