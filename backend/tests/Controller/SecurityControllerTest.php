@@ -17,7 +17,7 @@ final class SecurityControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        
+
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $this->testUserEmail]);
         if ($existingUser) {
             $this->entityManager->remove($existingUser);
@@ -31,7 +31,7 @@ final class SecurityControllerTest extends WebTestCase
             'first_name' => 'John',
             'last_name' => 'Doe',
             'email' => $this->testUserEmail,
-            'password' => 'Test123!'
+            'password' => 'Test123!',
         ];
 
         $this->client->request(
@@ -56,7 +56,7 @@ final class SecurityControllerTest extends WebTestCase
             'first_name' => 'John',
             'last_name' => 'Doe',
             'email' => $this->testUserEmail,
-            'password' => 'Test123!'
+            'password' => 'Test123!',
         ];
 
         $this->client->request(
@@ -89,7 +89,7 @@ final class SecurityControllerTest extends WebTestCase
     {
         $userData = [
             'first_name' => 'John',
-            'email' => $this->testUserEmail
+            'email' => $this->testUserEmail,
         ];
 
         $this->client->request(
@@ -116,16 +116,16 @@ final class SecurityControllerTest extends WebTestCase
         $user->setFirstName('John');
         $user->setLastName('Doe');
         $user->setEmail($this->testUserEmail);
-        
+
         $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $user->setPassword($passwordHasher->hashPassword($user, $password));
-        
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         $loginData = [
             'email' => $this->testUserEmail,
-            'password' => $password
+            'password' => $password,
         ];
 
         $this->client->request(
@@ -151,16 +151,16 @@ final class SecurityControllerTest extends WebTestCase
         $user->setFirstName('John');
         $user->setLastName('Doe');
         $user->setEmail($this->testUserEmail);
-        
+
         $passwordHasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $user->setPassword($passwordHasher->hashPassword($user, $password));
-        
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         $loginData = [
             'email' => $this->testUserEmail,
-            'password' => 'wrongpassword'
+            'password' => 'wrongpassword',
         ];
 
         $this->client->request(

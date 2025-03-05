@@ -37,7 +37,7 @@ class EventController extends AbstractController
                     type: 'array',
                     items: new OA\Items(ref: new Model(type: Event::class, groups: ['event:read']))
                 )
-            )
+            ),
         ]
     )]
     public function index(): JsonResponse
@@ -58,7 +58,7 @@ class EventController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OA\Response(
@@ -66,7 +66,7 @@ class EventController extends AbstractController
                 description: 'Returns the event',
                 content: new OA\JsonContent(ref: new Model(type: Event::class, groups: ['event:read']))
             ),
-            new OA\Response(response: 404, description: 'Event not found')
+            new OA\Response(response: 404, description: 'Event not found'),
         ]
     )]
     public function show(int $id): JsonResponse
@@ -96,7 +96,7 @@ class EventController extends AbstractController
                     new OA\Property(property: 'start_date', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'end_date', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'user_id', type: 'integer'),
-                    new OA\Property(property: 'worksite_id', type: 'integer')
+                    new OA\Property(property: 'worksite_id', type: 'integer'),
                 ]
             )
         ),
@@ -106,7 +106,7 @@ class EventController extends AbstractController
                 description: 'Event created',
                 content: new OA\JsonContent(ref: new Model(type: Event::class, groups: ['event:read']))
             ),
-            new OA\Response(response: 400, description: 'Invalid input')
+            new OA\Response(response: 400, description: 'Invalid input'),
         ]
     )]
     public function create(Request $request): JsonResponse
@@ -157,7 +157,7 @@ class EventController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         requestBody: new OA\RequestBody(
             content: new OA\JsonContent(
@@ -167,7 +167,7 @@ class EventController extends AbstractController
                     new OA\Property(property: 'start_date', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'end_date', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'user_id', type: 'integer'),
-                    new OA\Property(property: 'worksite_id', type: 'integer')
+                    new OA\Property(property: 'worksite_id', type: 'integer'),
                 ]
             )
         ),
@@ -177,7 +177,7 @@ class EventController extends AbstractController
                 description: 'Event updated',
                 content: new OA\JsonContent(ref: new Model(type: Event::class, groups: ['event:read']))
             ),
-            new OA\Response(response: 404, description: 'Event not found')
+            new OA\Response(response: 404, description: 'Event not found'),
         ]
     )]
     public function update(Request $request, int $id): JsonResponse
@@ -234,11 +234,11 @@ class EventController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OA\Response(response: 204, description: 'Event deleted'),
-            new OA\Response(response: 404, description: 'Event not found')
+            new OA\Response(response: 404, description: 'Event not found'),
         ]
     )]
     public function delete(int $id): JsonResponse

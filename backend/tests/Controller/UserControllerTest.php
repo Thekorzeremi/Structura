@@ -5,7 +5,6 @@ namespace App\Tests\Controller;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserControllerTest extends WebTestCase
 {
@@ -29,7 +28,7 @@ class UserControllerTest extends WebTestCase
             'first_name' => 'John',
             'last_name' => 'Doe',
             'email' => $this->testUserEmail,
-            'password' => 'Test123!'
+            'password' => 'Test123!',
         ];
 
         $this->client->request(
@@ -42,15 +41,15 @@ class UserControllerTest extends WebTestCase
         );
 
         $response = $this->client->getResponse();
-        echo "\nRegistration response in setUp: " . $response->getContent() . "\n";
-        echo "Status code: " . $response->getStatusCode() . "\n";
-        
+        echo "\nRegistration response in setUp: ".$response->getContent()."\n";
+        echo 'Status code: '.$response->getStatusCode()."\n";
+
         $content = json_decode($response->getContent(), true);
-        
+
         if (!isset($content['token'])) {
-            throw new \RuntimeException('Failed to get JWT token. Response: ' . $response->getContent());
+            throw new \RuntimeException('Failed to get JWT token. Response: '.$response->getContent());
         }
-        
+
         $this->token = $content['token'];
     }
 
@@ -63,12 +62,12 @@ class UserControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
         $response = $this->client->getResponse();
-        echo "\nGet users response: " . $response->getContent() . "\n";
+        echo "\nGet users response: ".$response->getContent()."\n";
         $content = json_decode($response->getContent(), true);
 
         self::assertEquals(200, $response->getStatusCode());
@@ -82,12 +81,12 @@ class UserControllerTest extends WebTestCase
 
         $this->client->request(
             'GET',
-            '/api/users/' . $user->getId(),
+            '/api/users/'.$user->getId(),
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -109,7 +108,7 @@ class UserControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -126,17 +125,17 @@ class UserControllerTest extends WebTestCase
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $this->testUserEmail]);
         $newData = [
             'first_name' => 'Jane',
-            'last_name' => 'Smith'
+            'last_name' => 'Smith',
         ];
 
         $this->client->request(
             'PUT',
-            '/api/users/' . $user->getId(),
+            '/api/users/'.$user->getId(),
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ],
             json_encode($newData)
         );
@@ -153,7 +152,7 @@ class UserControllerTest extends WebTestCase
     {
         $newData = [
             'first_name' => 'Jane',
-            'last_name' => 'Smith'
+            'last_name' => 'Smith',
         ];
 
         $this->client->request(
@@ -163,7 +162,7 @@ class UserControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ],
             json_encode($newData)
         );
@@ -182,12 +181,12 @@ class UserControllerTest extends WebTestCase
 
         $this->client->request(
             'DELETE',
-            '/api/users/' . $user->getId(),
+            '/api/users/'.$user->getId(),
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -206,7 +205,7 @@ class UserControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 

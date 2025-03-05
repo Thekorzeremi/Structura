@@ -2,8 +2,8 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Worksite;
 use App\Entity\User;
+use App\Entity\Worksite;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -24,7 +24,7 @@ class WorksiteControllerTest extends WebTestCase
             'first_name' => 'John',
             'last_name' => 'Doe',
             'email' => $this->testUserEmail,
-            'password' => 'Test123!'
+            'password' => 'Test123!',
         ];
 
         $this->client->request(
@@ -38,11 +38,11 @@ class WorksiteControllerTest extends WebTestCase
 
         $response = $this->client->getResponse();
         $content = json_decode($response->getContent(), true);
-        
+
         if (!isset($content['token'])) {
-            throw new \RuntimeException('Failed to get JWT token. Response: ' . $response->getContent());
+            throw new \RuntimeException('Failed to get JWT token. Response: '.$response->getContent());
         }
-        
+
         $this->token = $content['token'];
     }
 
@@ -55,7 +55,7 @@ class WorksiteControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -74,7 +74,7 @@ class WorksiteControllerTest extends WebTestCase
             'end_date' => '2025-03-06T11:00:00+00:00',
             'place' => 'Paris',
             'description' => 'Major construction project',
-            'skills' => ['Construction', 'Engineering']
+            'skills' => ['Construction', 'Engineering'],
         ];
 
         $this->client->request(
@@ -84,7 +84,7 @@ class WorksiteControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ],
             json_encode($worksiteData)
         );
@@ -106,12 +106,12 @@ class WorksiteControllerTest extends WebTestCase
 
         $this->client->request(
             'GET',
-            '/api/worksites/' . $this->testWorksite,
+            '/api/worksites/'.$this->testWorksite,
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -130,17 +130,17 @@ class WorksiteControllerTest extends WebTestCase
         $updateData = [
             'title' => 'Updated Construction Site',
             'place' => 'Lyon',
-            'skills' => ['Construction', 'Engineering', 'Management']
+            'skills' => ['Construction', 'Engineering', 'Management'],
         ];
 
         $this->client->request(
             'PUT',
-            '/api/worksites/' . $this->testWorksite,
+            '/api/worksites/'.$this->testWorksite,
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ],
             json_encode($updateData)
         );
@@ -160,12 +160,12 @@ class WorksiteControllerTest extends WebTestCase
 
         $this->client->request(
             'DELETE',
-            '/api/worksites/' . $this->testWorksite,
+            '/api/worksites/'.$this->testWorksite,
             [],
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -184,7 +184,7 @@ class WorksiteControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 
@@ -200,7 +200,7 @@ class WorksiteControllerTest extends WebTestCase
     {
         $updateData = [
             'title' => 'Updated Construction Site',
-            'place' => 'Lyon'
+            'place' => 'Lyon',
         ];
 
         $this->client->request(
@@ -210,7 +210,7 @@ class WorksiteControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ],
             json_encode($updateData)
         );
@@ -232,7 +232,7 @@ class WorksiteControllerTest extends WebTestCase
             [],
             [
                 'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token
+                'HTTP_AUTHORIZATION' => 'Bearer '.$this->token,
             ]
         );
 

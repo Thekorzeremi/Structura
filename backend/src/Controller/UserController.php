@@ -37,7 +37,7 @@ class UserController extends AbstractController
                     type: 'array',
                     items: new OA\Items(ref: new Model(type: User::class, groups: ['user:read']))
                 )
-            )
+            ),
         ]
     )]
     public function index(): JsonResponse
@@ -58,7 +58,7 @@ class UserController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OA\Response(
@@ -66,7 +66,7 @@ class UserController extends AbstractController
                 description: 'Returns the user',
                 content: new OA\JsonContent(ref: new Model(type: User::class, groups: ['user:read']))
             ),
-            new OA\Response(response: 404, description: 'User not found')
+            new OA\Response(response: 404, description: 'User not found'),
         ]
     )]
     public function show(int $id): JsonResponse
@@ -92,7 +92,7 @@ class UserController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         requestBody: new OA\RequestBody(
             content: new OA\JsonContent(
@@ -110,7 +110,7 @@ class UserController extends AbstractController
                 description: 'User updated',
                 content: new OA\JsonContent(ref: new Model(type: User::class, groups: ['user:read']))
             ),
-            new OA\Response(response: 404, description: 'User not found')
+            new OA\Response(response: 404, description: 'User not found'),
         ]
     )]
     public function update(Request $request, int $id): JsonResponse
@@ -153,11 +153,11 @@ class UserController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OA\Response(response: 204, description: 'User deleted'),
-            new OA\Response(response: 404, description: 'User not found')
+            new OA\Response(response: 404, description: 'User not found'),
         ]
     )]
     public function delete(int $id): JsonResponse

@@ -35,7 +35,7 @@ class WorksiteController extends AbstractController
                     type: 'array',
                     items: new OA\Items(ref: new Model(type: Worksite::class, groups: ['worksite:read']))
                 )
-            )
+            ),
         ]
     )]
     public function index(): JsonResponse
@@ -56,7 +56,7 @@ class WorksiteController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OA\Response(
@@ -64,7 +64,7 @@ class WorksiteController extends AbstractController
                 description: 'Returns the worksite',
                 content: new OA\JsonContent(ref: new Model(type: Worksite::class, groups: ['worksite:read']))
             ),
-            new OA\Response(response: 404, description: 'Worksite not found')
+            new OA\Response(response: 404, description: 'Worksite not found'),
         ]
     )]
     public function show(int $id): JsonResponse
@@ -94,7 +94,7 @@ class WorksiteController extends AbstractController
                     new OA\Property(property: 'end_date', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'place', type: 'string'),
                     new OA\Property(property: 'description', type: 'string'),
-                    new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
+                    new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string')),
                 ]
             )
         ),
@@ -104,7 +104,7 @@ class WorksiteController extends AbstractController
                 description: 'Worksite created',
                 content: new OA\JsonContent(ref: new Model(type: Worksite::class, groups: ['worksite:read']))
             ),
-            new OA\Response(response: 400, description: 'Invalid input')
+            new OA\Response(response: 400, description: 'Invalid input'),
         ]
     )]
     public function create(Request $request): JsonResponse
@@ -147,7 +147,7 @@ class WorksiteController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         requestBody: new OA\RequestBody(
             content: new OA\JsonContent(
@@ -157,7 +157,7 @@ class WorksiteController extends AbstractController
                     new OA\Property(property: 'end_date', type: 'string', format: 'date-time'),
                     new OA\Property(property: 'place', type: 'string'),
                     new OA\Property(property: 'description', type: 'string'),
-                    new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
+                    new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string')),
                 ]
             )
         ),
@@ -167,7 +167,7 @@ class WorksiteController extends AbstractController
                 description: 'Worksite updated',
                 content: new OA\JsonContent(ref: new Model(type: Worksite::class, groups: ['worksite:read']))
             ),
-            new OA\Response(response: 404, description: 'Worksite not found')
+            new OA\Response(response: 404, description: 'Worksite not found'),
         ]
     )]
     public function update(Request $request, int $id): JsonResponse
@@ -216,12 +216,12 @@ class WorksiteController extends AbstractController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
-            )
+            ),
         ],
         responses: [
             new OA\Response(response: 204, description: 'Worksite deleted'),
             new OA\Response(response: 404, description: 'Worksite not found'),
-            new OA\Response(response: 400, description: 'Cannot delete worksite with associated events')
+            new OA\Response(response: 400, description: 'Cannot delete worksite with associated events'),
         ]
     )]
     public function delete(int $id): JsonResponse
