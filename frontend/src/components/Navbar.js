@@ -15,6 +15,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed left-0 top-0 h-screen w-[75px] flex flex-col items-center justify-between py-6">
+      <div className="absolute h-full top-0 w-[1px] bg-gray-300 left-[75px]"></div>
       <div className="flex flex-col items-center">
         <img className="rounded-full w-[48px] h-[48px]" src="/assets/logo.png" alt="logo" />
         <ul className="flex flex-col rounded-lg p-3 gap-2">
@@ -31,7 +32,7 @@ export default function Navbar() {
                 }`}
               >
                 <Icon size={20} />
-                <span className="absolute left-10 ml-4 bottom-3.5 px-2 py-1 bg-gray-200 text-black text-sm rounded-sm opacity-0 group-hover:opacity-100 transition-all ease-in-out duration-100 group-hover:delay-[800ms] pointer-events-none whitespace-nowrap">
+                <span className="absolute left-15 ml-4 bottom-3.5 px-2 py-1 bg-gray-200 text-black text-sm rounded-sm opacity-0 group-hover:opacity-100 transition-all ease-in-out duration-100 group-hover:delay-[800ms] pointer-events-none whitespace-nowrap">
                   {item.name}
                 </span>
               </Link>
@@ -48,7 +49,11 @@ export default function Navbar() {
             </span>
           </span>
         </div>
-        <img className="rounded-full w-[48px] h-[48px]" src="/assets/logo.png" alt="logo" />
+        <img
+          className="rounded-full w-[48px] h-[48px] object-cover"
+          src="/assets/profile_pic.png"
+          alt="logo"
+        />
       </div>
     </nav>
   );
