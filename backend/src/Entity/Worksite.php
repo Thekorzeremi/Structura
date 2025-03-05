@@ -1,126 +1,33 @@
 <?php
 
-namespace App\Entity;
+namespace App\Controller;
 
-use App\Repository\WorksiteRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Worksite;
+use App\Entity\User;
 
-#[ORM\Entity(repositoryClass: WorksiteRepository::class)]
-class Worksite
+final class AssignmentController extends AbstractController
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $start_date = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $end_date = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
-
-    #[ORM\Column]
-    private array $skills = [];
-
-    #[ORM\Column(length: 255)]
-    private ?string $place = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $notes = null;
-
-    public function getId(): ?int
+    #[Route('/api/worksites/{id}', name: 'api_worksites_by_user', methods: ['GET'])]
+    public function getWorksitesByUser(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
-        return $this->id;
-    }
+        $user = $entityManager->getRepository(User::class)->find($id);
 
-    public function getStartDate(): ?\DateTimeInterface
-    {
-        return $this->start_date;
-    }
+        if (!$user) {
+            return $this->json(['error' => 'Utilisateur non trouvé'], 404);
+        }
 
-    public function setStartDate(\DateTimeInterface $start_date): static
-    {
-        $this->start_date = $start_date;
+       
+        $worksites = $entityManager->getRepository(Worksite::class)->findAll(); 
 
-        return $this;
-    }
+        $result = array_map(fn($worksite) => [
+            'title' => $worksite->getTitle(),
+            'place' => $worksite->getPlace(),
+        ], $worksites);
 
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->end_date;
-    }
-
-    public function setEndDate(\DateTimeInterface $end_date): static
-    {
-        $this->end_date = $end_date;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getSkills(): array
-    {
-        return $this->skills;
-    }
-
-    public function setSkills(array $skills): static
-    {
-        $this->skills = $skills;
-
-        return $this;
-    }
-
-    public function getPlace(): ?string
-    {
-        return $this->place;
-    }
-
-    public function setPlace(string $place): static
-    {
-        $this->place = $place;
-
-        return $this;
-    }
-
-    public function getNotes(): ?string
-    {
-        return $this->notes;
-    }
-
-    public function setNotes(?string $notes): static
-    {
-        $this->notes = $notes;
-
-        return $this;
+        return $this->json($result);
     }
 }
