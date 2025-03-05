@@ -16,7 +16,7 @@ class WorksiteController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
     ) {
     }
 
@@ -70,6 +70,7 @@ class WorksiteController extends AbstractController
         $this->entityManager->flush();
 
         $responseData = $this->serializer->serialize($worksite, 'json', ['groups' => ['worksite:read']]);
+
         return new JsonResponse($responseData, Response::HTTP_CREATED, [], true);
     }
 
@@ -106,6 +107,7 @@ class WorksiteController extends AbstractController
         $this->entityManager->flush();
 
         $responseData = $this->serializer->serialize($worksite, 'json', ['groups' => ['worksite:read']]);
+
         return new JsonResponse($responseData, Response::HTTP_OK, [], true);
     }
 

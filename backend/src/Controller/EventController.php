@@ -18,7 +18,7 @@ class EventController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
     ) {
     }
 
@@ -80,6 +80,7 @@ class EventController extends AbstractController
         $this->entityManager->flush();
 
         $data = $this->serializer->serialize($event, 'json', ['groups' => ['event:read']]);
+
         return new JsonResponse($data, Response::HTTP_CREATED, [], true);
     }
 
@@ -124,6 +125,7 @@ class EventController extends AbstractController
         $this->entityManager->flush();
 
         $responseData = $this->serializer->serialize($event, 'json', ['groups' => ['event:read']]);
+
         return new JsonResponse($responseData, Response::HTTP_OK, [], true);
     }
 
