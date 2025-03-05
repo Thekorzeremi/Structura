@@ -43,7 +43,8 @@ final class UserController extends AbstractController
         $user->setEmail($data['email']);
         $user->setRoles(["ROLE_USER"]);
         $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
-
+        $user->setSkills($data['skills'] ?? []);
+        $user->setJob($data['job'] ?? null);
         $entityManager->persist($user);
         $entityManager->flush();
         $token = $jwtManager->create($user);

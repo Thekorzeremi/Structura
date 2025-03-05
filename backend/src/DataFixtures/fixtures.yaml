@@ -1,0 +1,49 @@
+App\Entity\User:
+
+  user_{1..2}:
+    firstName: <firstName()>
+    lastName: <lastName()>
+    email: <email()>
+    roles: ['ROLE_USER']
+    password: <password()> #password = test1234&
+    skills: ['<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>']
+    job: '<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>'
+    phone: '<phoneNumber()>'
+
+  admin_{1..2}:
+    firstName: <firstName()>
+    lastName: <lastName()>
+    email: <email()>
+    roles: ['ROLE_ADMIN']
+    password: <password()>
+    skills: ['<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>']
+    job: '<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>'
+    phone: '<phoneNumber()>'
+
+  employee_{1..2}:
+
+    firstName: <firstName()>
+    lastName: <lastName()>
+    email: <email()>
+    roles: ['ROLE_EMPLOYEE']
+    password: <password()>
+    skills: ['<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>']
+    job: '<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>'
+    phone: '<phoneNumber()>'
+
+
+App\Entity\Worksite:
+  worksite_{1..3}:
+    startDate: <dateTimeBetween('-6 months', 'now')>
+    endDate: <dateTimeBetween('now', '+6 months')>
+    title: <title()>
+    description: <text(255)>
+    skills: ['<randomElement(["Plumbing", "Carpentry", "Electrical", "Masonry", "Painting"])>']
+    place: <address()>
+
+
+App\Entity\Assignment:
+  assignment_{1..2}:
+    user: '@user_<current(1,2)>'
+    startDate: <dateTimeBetween('-6 months', 'now')>
+    endDate: <dateTimeBetween('now', '+6 months')>

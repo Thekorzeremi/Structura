@@ -9,10 +9,12 @@ security:
             entity:
                 class: App\Entity\User
                 property: email # AUTH IS EMAIL BASED
+    
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        
         main:
             lazy: true
             provider: users_in_memory
@@ -43,7 +45,8 @@ security:
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY } 
+        - { path: ^/api, roles: PUBLIC_ACCESS } 
+        - { path: ^/api/profile, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:
     security:
