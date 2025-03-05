@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { House, Calendar, Hammer, Users, Moon, Sun } from 'lucide-react';
+import Profil_modal from './modals/Profil_modal';
 
 export default function Navbar() {
   const location = useLocation();
   const [isDark, setIsDark] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const navbarItems = [
     { icon: House, path: '/', name: 'Accueil' },
@@ -50,10 +52,12 @@ export default function Navbar() {
           </span>
         </div>
         <img
-          className="rounded-full w-[48px] h-[48px] object-cover"
+          className="rounded-full w-[48px] h-[48px] object-cover cursor-pointer"
           src="/assets/profile_pic.png"
           alt="logo"
+          onClick={() => setIsProfileModalOpen(!isProfileModalOpen)}
         />
+        {isProfileModalOpen && <Profil_modal setIsOpen={setIsProfileModalOpen} />}
       </div>
     </nav>
   );
