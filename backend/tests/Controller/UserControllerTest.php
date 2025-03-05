@@ -19,14 +19,12 @@ class UserControllerTest extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
 
-        // Nettoyer les utilisateurs de test existants
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $this->testUserEmail]);
         if ($existingUser) {
             $this->entityManager->remove($existingUser);
             $this->entityManager->flush();
         }
 
-        // Enregistrer un nouvel utilisateur pour obtenir un token
         $userData = [
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -195,7 +193,6 @@ class UserControllerTest extends WebTestCase
 
         self::assertEquals(204, $this->client->getResponse()->getStatusCode());
 
-        // Vérifier que l'utilisateur a bien été supprimé
         $deletedUser = $this->entityManager->getRepository(User::class)->find($user->getId());
         self::assertNull($deletedUser);
     }
@@ -223,7 +220,6 @@ class UserControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
-        // Nettoyer les utilisateurs de test
         $testUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $this->testUserEmail]);
         if ($testUser) {
             $this->entityManager->remove($testUser);
