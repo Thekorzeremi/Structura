@@ -19,7 +19,7 @@ final class AssignmentController extends AbstractController
         if (!$user) {
             return $this->json(['error' => 'Utilisateur non trouvé'], 404);
         }
-
+        
         $worksites = $entityManager->getRepository(Worksite::class)->findAll();
 
         $result = array_map(fn($worksite) => [
