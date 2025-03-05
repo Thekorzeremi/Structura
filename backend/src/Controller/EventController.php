@@ -31,6 +31,20 @@ class EventController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
+    #[Route('/{id}', name: 'get_event', methods: ['GET'])]
+    public function show(int $id): JsonResponse
+    {
+        $event = $this->entityManager->getRepository(Event::class)->find($id);
+
+        if (!$event) {
+            return $this->json(['error' => 'Event not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $this->serializer->serialize($event, 'json', ['groups' => ['event:read']]);
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
     #[Route('/', name: 'create_event', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {

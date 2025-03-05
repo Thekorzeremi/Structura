@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: WorksiteRepository::class)]
 class Worksite
@@ -14,30 +15,38 @@ class Worksite
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['worksite:read', 'event:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['worksite:read'])]
     private ?\DateTimeInterface $start_date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['worksite:read'])]
     private ?\DateTimeInterface $end_date = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['worksite:read', 'event:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['worksite:read'])]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['worksite:read'])]
     private ?array $skills = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['worksite:read', 'event:read'])]
     private ?string $place = null;
 
     /**
      * @var Collection<int, Event>
      */
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'worksite')]
+    #[Groups(['worksite:read'])]
     private Collection $event;
 
     public function __construct()

@@ -31,6 +31,20 @@ class UserController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
+    #[Route('/{id}', name: 'get_user', methods: ['GET'])]
+    public function show(int $id): JsonResponse
+    {
+        $user = $this->entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $this->serializer->serialize($user, 'json', ['groups' => ['user:read']]);
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
     #[Route('/{id}', name: 'update_user', methods: ['PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
