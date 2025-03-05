@@ -5,12 +5,11 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+#[ORM\Table(name: '`user`')]
+class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,44 +17,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $firstName = null;
+    private ?string $first_name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
+    private ?string $last_name = null;
 
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: "user", targetEntity: Assignment::class, cascade: ["persist", "remove"])]
-    private Collection $assignments;
+    #[ORM\Column(nullable: true)]
+    private ?array $skills = null;
 
-    /**
-     * @var Collection<int, Assignment>
-     */
-    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'user')]
-    private Collection $assignemnts;
-
-    #[ORM\Column]
-    private array $skills = [];
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $job = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
 
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'user')]
+    private Collection $event;
+
     public function __construct()
     {
-        $this->assignemnts = new ArrayCollection();
+        $this->event = new ArrayCollection();
     }
-
-    
 
     public function getId(): ?int
     {
@@ -64,23 +58,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getFirstName(): ?string
     {
-        return $this->firstName;
+        return $this->first_name;
     }
 
-    public function setFirstName(string $firstName): static
+    public function setFirstName(string $first_name): static
     {
-        $this->firstName = $firstName;
+        $this->first_name = $first_name;
+
         return $this;
     }
 
     public function getLastName(): ?string
     {
-        return $this->lastName;
+        return $this->last_name;
     }
 
-    public function setLastName(string $lastName): static
+    public function setLastName(string $last_name): static
     {
-        $this->lastName = $lastName;
+        $this->last_name = $last_name;
+
         return $this;
     }
 
@@ -92,6 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -103,6 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -114,40 +112,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-        return $this;
-    }
-
-    public function getAssignments(): Collection
-    {
-        return $this->assignments;
-    }
-
-    /**
-     * @return Collection<int, Assignment>
-     */
-    public function getAssignemnts(): Collection
-    {
-        return $this->assignemnts;
-    }
-
-    public function addAssignemnt(Assignment $assignemnt): static
-    {
-        if (!$this->assignemnts->contains($assignemnt)) {
-            $this->assignemnts->add($assignemnt);
-            $assignemnt->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAssignemnt(Assignment $assignemnt): static
-    {
-        if ($this->assignemnts->removeElement($assignemnt)) {
-            // set the owning side to null (unless already changed)
-            if ($assignemnt->getUser() === $this) {
-                $assignemnt->setUser(null);
-            }
-        }
 
         return $this;
     }
@@ -169,7 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->job;
     }
 
-    public function setJob(string $job): static
+    public function setJob(?string $job): static
     {
         $this->job = $job;
 
@@ -189,21 +153,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return Collection<int, Event>
      */
-    public function getUserIdentifier(): string
+    public function getEvent(): Collection
     {
-        return (string) $this->email;
+        return $this->event;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
+    public function addEvent(Event $event): static
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        if (!$this->event->contains($event)) {
+            $this->event->add($event);
+            $event->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->event->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getUser() === $this) {
+                $event->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

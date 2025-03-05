@@ -16,36 +16,33 @@ class Worksite
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $start_date = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $end_date = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private array $skills = [];
+    #[ORM\Column(nullable: true)]
+    private ?array $skills = null;
 
     #[ORM\Column(length: 255)]
     private ?string $place = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $notes = null;
-
     /**
-     * @var Collection<int, Assignment>
+     * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'worksite')]
-    private Collection $assignment;
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'worksite')]
+    private Collection $event;
 
     public function __construct()
     {
-        $this->assignment = new ArrayCollection();
+        $this->event = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -94,19 +91,19 @@ class Worksite
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getSkills(): array
+    public function getSkills(): ?array
     {
         return $this->skills;
     }
 
-    public function setSkills(array $skills): static
+    public function setSkills(?array $skills): static
     {
         $this->skills = $skills;
 
@@ -125,42 +122,30 @@ class Worksite
         return $this;
     }
 
-    public function getNotes(): ?string
-    {
-        return $this->notes;
-    }
-
-    public function setNotes(?string $notes): static
-    {
-        $this->notes = $notes;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Assignment>
+     * @return Collection<int, Event>
      */
-    public function getAssignment(): Collection
+    public function getEvent(): Collection
     {
-        return $this->assignment;
+        return $this->event;
     }
 
-    public function addAssignment(Assignment $assignment): static
+    public function addEvent(Event $event): static
     {
-        if (!$this->assignment->contains($assignment)) {
-            $this->assignment->add($assignment);
-            $assignment->setWorksite($this);
+        if (!$this->event->contains($event)) {
+            $this->event->add($event);
+            $event->setWorksite($this);
         }
 
         return $this;
     }
 
-    public function removeAssignment(Assignment $assignment): static
+    public function removeEvent(Event $event): static
     {
-        if ($this->assignment->removeElement($assignment)) {
+        if ($this->event->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($assignment->getWorksite() === $this) {
-                $assignment->setWorksite(null);
+            if ($event->getWorksite() === $this) {
+                $event->setWorksite(null);
             }
         }
 
