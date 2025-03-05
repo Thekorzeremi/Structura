@@ -1,0 +1,9 @@
+# fixtures/worksite.yaml
+App\Entity\Worksite:
+  worksite_{1..10}:
+    start_date: ''
+    end_date: ''
+    title: ''
+    description: ''
+    skills: ''
+    place: ''

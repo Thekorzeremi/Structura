@@ -1,0 +1,16 @@
+# fixtures/event.yaml
+App\Entity\Event:
+  absence_{1..5}:
+    type: ''
+    status: ''
+    start_date: ''
+    end_date: ''
+    user_id: @user_{1..10}
+    worksite_id: ''
+  assignment_{1..10}:
+    type: ''
+    status: ''
+    start_date: ''
+    end_date: ''
+    user_id: ''
+    worksite_id: ''
