@@ -172,6 +172,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetToken(?string $resetToken): self
     {
         $this->resetToken = $resetToken;
+
         return $this;
     }
 
@@ -183,6 +184,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetTokenExpiresAt(?\DateTimeInterface $resetTokenExpiresAt): self
     {
         $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+
         return $this;
     }
 
