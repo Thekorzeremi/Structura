@@ -23,6 +23,9 @@ class Assignment
     #[ORM\ManyToOne(inversedBy: 'assignments')]
     private ?User $user = null;
 
+    #[ORM\ManyToOne(inversedBy: 'assignment')]
+    private ?Worksite $worksite = null;
+
 
     public function getId(): ?int
     {
@@ -73,6 +76,18 @@ class Assignment
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getWorksite(): ?Worksite
+    {
+        return $this->worksite;
+    }
+
+    public function setWorksite(?Worksite $worksite): static
+    {
+        $this->worksite = $worksite;
 
         return $this;
     }

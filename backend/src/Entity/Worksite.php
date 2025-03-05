@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\WorksiteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,17 @@ class Worksite
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $notes = null;
+
+    /**
+     * @var Collection<int, Assignment>
+     */
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'worksite')]
+    private Collection $assignment;
+
+    public function __construct()
+    {
+        $this->assignment = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +133,36 @@ class Worksite
     public function setNotes(?string $notes): static
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Assignment>
+     */
+    public function getAssignment(): Collection
+    {
+        return $this->assignment;
+    }
+
+    public function addAssignment(Assignment $assignment): static
+    {
+        if (!$this->assignment->contains($assignment)) {
+            $this->assignment->add($assignment);
+            $assignment->setWorksite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): static
+    {
+        if ($this->assignment->removeElement($assignment)) {
+            // set the owning side to null (unless already changed)
+            if ($assignment->getWorksite() === $this) {
+                $assignment->setWorksite(null);
+            }
+        }
 
         return $this;
     }
