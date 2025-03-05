@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../security/AuthContext';
 import { House, Calendar, Hammer, Users, Moon, Sun } from 'lucide-react';
 import Profil_modal from './modals/ProfilModal';
 
@@ -11,9 +11,14 @@ export default function Navbar() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const navbarItems = [
-    { icon: House, path: '/', name: 'Accueil', roles: ['ROLE_USER'] },
-    { icon: Calendar, path: '/assignment', name: 'Affectations', roles: ['ROLE_USER'] },
-    { icon: Hammer, path: '/worksite', name: 'Chantiers', roles: ['ROLE_USER'] },
+    { icon: House, path: '/', name: 'Accueil', roles: ['ROLE_USER', 'ROLE_ADMIN'] },
+    {
+      icon: Calendar,
+      path: '/assignment',
+      name: 'Affectations',
+      roles: ['ROLE_USER', 'ROLE_ADMIN'],
+    },
+    { icon: Hammer, path: '/worksite', name: 'Chantiers', roles: ['ROLE_ADMIN'] },
     { icon: Users, path: '/people', name: 'Personnes', roles: ['ROLE_ADMIN'] },
   ];
 
