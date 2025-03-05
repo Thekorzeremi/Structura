@@ -1,16 +1,23 @@
 # fixtures/event.yaml
 App\Entity\Event:
   absence_{1..5}:
-    type: ''
-    status: ''
-    start_date: ''
-    end_date: ''
-    user_id: @user_{1..10}
-    worksite_id: ''
+    type: 'absence'
+    status: '<randomElement(["rejected", "accepted", "pending"])>'
+    start_date: '<dateTimeBetween("-3 years", "now")>'
+    end_date: '<dateTimeBetween("-3 years", "now")>'
+    user: '@employe_<numberBetween(1, 10)>'
+    worksite: '@worksite_<numberBetween(1, 10)>'
   assignment_{1..10}:
-    type: ''
-    status: ''
-    start_date: ''
-    end_date: ''
-    user_id: ''
-    worksite_id: ''
+    type: 'assignment'
+    status: '<randomElement(["rejected", "accepted", "pending"])>'
+    start_date: '<dateTimeBetween("-3 years", "now")>'
+    end_date: '<dateTimeBetween("-3 years", "now")>'
+    user: '@employe_<numberBetween(1, 10)>'
+    worksite: '@worksite_<numberBetween(1, 10)>'
+  assignment_{11..20}:
+    type: 'assignment'
+    status: '<randomElement(["rejected", "accepted", "pending"])>'
+    start_date: '<dateTimeBetween("-3 years", "now")>'
+    end_date: '<dateTimeBetween("-3 years", "now")>'
+    user: '@manager_<numberBetween(1, 5)>'
+    worksite: '@worksite_<numberBetween(1, 10)>'

@@ -1,9 +1,9 @@
 # fixtures/worksite.yaml
 App\Entity\Worksite:
   worksite_{1..10}:
-    start_date: ''
-    end_date: ''
-    title: ''
-    description: ''
-    skills: ''
-    place: ''
+    start_date: '<dateTimeBetween("-6 months", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: '<sentence(3)>'
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: '<city()>'
