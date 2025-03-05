@@ -1,15 +1,21 @@
-import '@mantine/core/styles.css';
-import { Button } from '@mantine/core';
-import { MantineProvider } from '@mantine/core';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AuthPage from "./pages/AuthPage";
+import { MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
 
-export default function App() {
-  return <>
-  
-        <MantineProvider>
-          
-            <Button variant="filled" >Button</Button>
 
-        </MantineProvider>
+function App() {
+  return (
+    <MantineProvider>
+        <Router>
+            <Routes>
+                <Route path="/auth" element={<AuthPage />} />
+                
+            </Routes>
 
-    </>   
+        </Router>
+    </MantineProvider>
+  );
 }
+
+export default App;
