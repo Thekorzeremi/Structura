@@ -1,4 +1,4 @@
-import { TextInput, PasswordInput, Checkbox, Button, Group, Anchor, Paper, Title } from "@mantine/core";
+import { TextInput, PasswordInput,Space, Checkbox, Button, Group, Anchor, Paper, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
 const RegisterForm = ({ switchToLogin }) => {
@@ -16,8 +16,11 @@ const RegisterForm = ({ switchToLogin }) => {
   };
 
   return (
-    <Paper withBorder shadow="md" p={30} radius="md">
-      <Title align="center">Bienvenue parmi nous</Title>
+    <Paper  shadow="0" p={30} radius="md">
+      <Title order={2}>Structura</Title>
+      <Space h="xl" />
+    
+      <Title order={3}>Bienvenue parmi nous</Title>
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput label="Prénom" {...form.getInputProps("name")} mt="sm" />
