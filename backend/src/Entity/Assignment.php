@@ -1,79 +1,32 @@
 <?php
 
-namespace App\Entity;
+namespace App\Controller;
 
-use App\Repository\AssignmentRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Worksite;
+use App\Entity\User;
 
-#[ORM\Entity(repositoryClass: AssignmentRepository::class)]
-class Assignment
+final class AssignmentController extends AbstractController
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $start_date = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $end_date = null;
-
-    #[ORM\ManyToOne(inversedBy: 'assignments')]
-    private ?User $user = null;
-
-
-    public function getId(): ?int
+    #[Route('/api/worksites/{id}', name: 'api_worksites_by_user', methods: ['GET'])]
+    public function getWorksitesByUser(int $id, EntityManagerInterface $entityManager): JsonResponse
     {
-        return $this->id;
-    }
+        $user = $entityManager->getRepository(User::class)->find($id);
 
-    public function getStartDate(): ?\DateTimeInterface
-    {
-        return $this->start_date;
-    }
+        if (!$user) {
+            return $this->json(['error' => 'Utilisateur non trouvé'], 404);
+        }
 
-    public function setStartDate(\DateTimeInterface $start_date): static
-    {
-        $this->start_date = $start_date;
+        $worksites = $entityManager->getRepository(Worksite::class)->findAll();
 
-        return $this;
-    }
+        $result = array_map(fn($worksite) => [
+            'title' => $worksite->getTitle(),
+            'place' => $worksite->getPlace(),
+        ], $worksites);
 
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->end_date;
-    }
-
-    public function setEndDate(\DateTimeInterface $end_date): static
-    {
-        $this->end_date = $end_date;
-
-        return $this;
-    }
-
-    public function getUserId(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUserId(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
+        return $this->json($result);
     }
 }
