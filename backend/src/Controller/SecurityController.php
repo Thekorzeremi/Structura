@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Attributes as OA;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +23,34 @@ final class SecurityController extends AbstractController
     }
 
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/register',
+        summary: 'Register a new user',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['first_name', 'last_name', 'email', 'password'],
+                properties: [
+                    new OA\Property(property: 'first_name', type: 'string'),
+                    new OA\Property(property: 'last_name', type: 'string'),
+                    new OA\Property(property: 'email', type: 'string', format: 'email'),
+                    new OA\Property(property: 'password', type: 'string', format: 'password'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'User successfully registered',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'token', type: 'string'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Invalid input'),
+        ]
+    )]
     public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, JWTTokenManagerInterface $jwtManager): JsonResponse
     {
         $this->logger->info('[SecurityController] Register - Receiving API Request');
@@ -78,6 +108,32 @@ final class SecurityController extends AbstractController
     }
 
     #[Route('/api/login_check', name: 'app_login')]
+    #[OA\Post(
+        path: '/api/login_check',
+        summary: 'Login to get a JWT token',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email', 'password'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email'),
+                    new OA\Property(property: 'password', type: 'string', format: 'password'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Login successful',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'token', type: 'string'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Invalid credentials'),
+        ]
+    )]
     public function loginCheck(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, JWTTokenManagerInterface $jwtManager, LoggerInterface $logger): JsonResponse
     {
         try {

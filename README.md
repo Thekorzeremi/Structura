@@ -11,3 +11,6 @@
 ### Frontend
 npx prettier --write .
 npx prettier --write assets/controllers.json
+
+## API
+See http://localhost:8000/api/doc/ for the API documentation.
