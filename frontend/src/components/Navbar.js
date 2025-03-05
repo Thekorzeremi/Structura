@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { House, Calendar, Hammer, Users, Moon, Sun } from 'lucide-react';
 import Profil_modal from './modals/ProfilModal';
 
 export default function Navbar() {
   const location = useLocation();
+  const { user } = useAuth();
   const [isDark, setIsDark] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const navbarItems = [
-    { icon: House, path: '/', name: 'Accueil' },
-    { icon: Calendar, path: '/assignment', name: 'Affectations' },
-    { icon: Hammer, path: '/worksite', name: 'Chantiers' },
-    { icon: Users, path: '/people', name: 'Personnes' },
+    { icon: House, path: '/', name: 'Accueil', roles: ['ROLE_USER'] },
+    { icon: Calendar, path: '/assignment', name: 'Affectations', roles: ['ROLE_USER'] },
+    { icon: Hammer, path: '/worksite', name: 'Chantiers', roles: ['ROLE_USER'] },
+    { icon: Users, path: '/people', name: 'Personnes', roles: ['ROLE_ADMIN'] },
   ];
+
+  const filteredNavbarItems = user?.roles
+    ? navbarItems.filter((item) => item.roles.some((role) => user.roles.includes(role)))
+    : navbarItems;
 
   return (
     <nav className="fixed left-0 top-0 h-screen w-[75px] flex flex-col items-center justify-between py-6">
@@ -21,7 +27,7 @@ export default function Navbar() {
       <div className="flex flex-col items-center">
         <img className="rounded-full w-[48px] h-[48px]" src="/assets/logo.png" alt="logo" />
         <ul className="flex flex-col rounded-lg p-3 gap-2">
-          {navbarItems.map((item) => {
+          {filteredNavbarItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
 
