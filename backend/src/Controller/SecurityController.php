@@ -225,7 +225,7 @@ final class SecurityController extends AbstractController
             }
 
             if (!$passwordHasher->isPasswordValid($user, $data['currentPassword'])) {
-                return $this->json(['error' => 'Current password is incorrect'], Response::HTTP_UNAUTHORIZED);
+                return $this->json(['error' => 'Mot de passe actuel incorrect'], Response::HTTP_UNAUTHORIZED);
             }
 
             $user->setPassword($passwordHasher->hashPassword($user, $data['newPassword']));
@@ -237,6 +237,68 @@ final class SecurityController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->error('[SecurityController] ChangePassword - Error', ['exception' => $e]);
             return $this->json(['error' => 'An error occurred while changing the password'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    #[Route('/api/delete-account', name: 'api_delete_account', methods: ['DELETE'])]
+    #[OA\Delete(
+        path: '/api/delete-account',
+        summary: 'Delete user account',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email', 'password'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email'),
+                    new OA\Property(property: 'password', type: 'string', format: 'password'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Account successfully deleted',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Invalid password'),
+            new OA\Response(response: 404, description: 'User not found'),
+        ]
+    )]
+    public function deleteAccount(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ): JsonResponse {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $this->logger->info('[SecurityController] DeleteAccount - Request received');
+
+            if (!isset($data['email'], $data['password'])) {
+                return $this->json(['error' => 'Informations manquantes'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+            if (!$user) {
+                return $this->json(['error' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
+            }
+
+            if (!$passwordHasher->isPasswordValid($user, $data['password'])) {
+                return $this->json(['error' => 'Mot de passe incorrect'], Response::HTTP_UNAUTHORIZED);
+            }
+
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->logger->info('[SecurityController] DeleteAccount - Account successfully deleted');
+            return $this->json(['message' => 'Compte supprimé avec succès'], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            $this->logger->error('[SecurityController] DeleteAccount - Error', ['exception' => $e]);
+            return $this->json(['error' => 'Une erreur est survenue lors de la suppression du compte'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

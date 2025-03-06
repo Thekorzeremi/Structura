@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Select from "../components/ui/Select";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 interface UserData {
   email: string;
@@ -23,6 +24,10 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [deleteAccountPassword, setDeleteAccountPassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const navigate = useNavigate();
 
   const filterItems = [
     { name: "Profil", value: 'profile'},
@@ -133,6 +138,36 @@ export default function Settings() {
       setNewPassword('');
     } catch (error) {
       setPasswordError('Une erreur est survenue lors de la modification du mot de passe');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setDeleteError('');
+
+      const response = await fetch('http://localhost:8000/api/delete-account', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          email: userData?.email,
+          password: deleteAccountPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setDeleteError(data.error || 'Une erreur est survenue');
+        return;
+      }
+
+      localStorage.removeItem('token');
+      navigate('/login');
+    } catch (error) {
+      setDeleteError('Une erreur est survenue lors de la suppression du compte');
     }
   };
 
@@ -296,10 +331,10 @@ export default function Settings() {
             </div>
             <div className="mt-4">
               <span className="text-lg font-semibold">Zone danger</span>
-              <div className="mt-4 max-w-md">
-                <div className="p-4 border border-red-200 rounded-lg bg-red-50">
-                  <h3 className="text-sm font-medium text-red-800 mb-4">Modification du mot de passe</h3>
-                  <div className="space-y-4">
+              <div className="mt-6 max-w-md">
+                <div className="p-6 border border-red-200 rounded-lg bg-red-50">
+                  <h3 className="text-sm font-semibold text-red-800 mb-6">Modification du mot de passe</h3>
+                  <div className="space-y-6">
                     <div className="flex flex-col gap-1">
                       <label htmlFor="currentPassword" className="text-xs text-gray-600">
                         Mot de passe actuel
@@ -310,7 +345,7 @@ export default function Settings() {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         className="w-full px-4 py-2 text-sm bg-[#f7f9fc] border border-[#E5E5E5] rounded-lg focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] placeholder:text-xs"
-                        placeholder="Entrez votre mot de passe actuel"
+                        placeholder="••••••••"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
@@ -323,29 +358,94 @@ export default function Settings() {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         className="w-full px-4 py-2 text-sm bg-[#f7f9fc] border border-[#E5E5E5] rounded-lg focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] placeholder:text-xs"
-                        placeholder="Entrez votre nouveau mot de passe"
+                        placeholder="••••••••"
                       />
                     </div>
-                    {passwordError && (
-                      <div className="text-xs text-red-600">{passwordError}</div>
-                    )}
-                    {passwordSuccess && (
-                      <div className="text-xs text-green-600">{passwordSuccess}</div>
-                    )}
-                    <div className="flex justify-end">
-                      <button
-                        onClick={handlePasswordChange}
-                        disabled={!currentPassword || !newPassword}
-                        className={`px-4 py-2 text-xs rounded-lg transition-colors ${
-                          !currentPassword || !newPassword
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-red-600 text-white hover:bg-red-700'
-                        }`}
-                      >
-                        Modifier le mot de passe
-                      </button>
+                    <div className="flex flex-row gap-1 justify-between items-center">
+                      <>
+                        {passwordError && (
+                          <div className="text-xs text-red-600">{passwordError}</div>
+                        )}
+                        {passwordSuccess && (
+                          <div className="text-xs text-green-600">{passwordSuccess}</div>
+                        )}
+                      </>
+                      <div className="flex">
+                        <button
+                          onClick={handlePasswordChange}
+                          disabled={!currentPassword || !newPassword}
+                          className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${
+                            !currentPassword || !newPassword
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-[#007AFF] text-white hover:bg-[#0056b3]'
+                          }`}
+                        >
+                          Modifier le mot de passe
+                        </button>
+                      </div>
                     </div>
                   </div>
+                  
+                </div>
+                <div className="mt-6 p-6 border border-red-200 rounded-lg bg-red-50">
+                  <h3 className="text-sm font-semibold text-red-800 mb-6">Suppression du compte</h3>
+                  <p className="text-xs text-red-600 mb-6">
+                    Attention : La suppression de votre compte est irréversible. Toutes vos données seront définitivement effacées.
+                  </p>
+                  {!showDeleteConfirm ? (
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="px-4 py-2 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                      >
+                        Supprimer mon compte
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="deleteAccountPassword" className="text-xs text-gray-600">
+                          Confirmez votre mot de passe
+                        </label>
+                        <input
+                          type="password"
+                          id="deleteAccountPassword"
+                          value={deleteAccountPassword}
+                          onChange={(e) => setDeleteAccountPassword(e.target.value)}
+                          className="w-full px-4 py-2 text-sm bg-[#f7f9fc] border border-[#E5E5E5] rounded-lg focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] placeholder:text-xs"
+                          placeholder="••••••••"
+                        />
+                      </div>
+                      <div className="flex flex-row gap-4 justify-end items-center">
+                        {deleteError && (
+                          <div className="text-xs text-red-600">{deleteError}</div>
+                        )}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              setShowDeleteConfirm(false);
+                              setDeleteAccountPassword('');
+                              setDeleteError('');
+                            }}
+                            className="px-4 py-2 text-xs font-medium rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                          >
+                            Annuler
+                          </button>
+                          <button
+                            onClick={handleDeleteAccount}
+                            disabled={!deleteAccountPassword}
+                            className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${
+                              !deleteAccountPassword
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-red-600 text-white hover:bg-red-700'
+                            }`}
+                          >
+                            Confirmer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
