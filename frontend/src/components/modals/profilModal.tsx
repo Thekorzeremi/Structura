@@ -1,5 +1,6 @@
 import { Settings, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ProfilModalProps {
   setIsOpen: (isOpen: boolean) => void;
@@ -7,10 +8,14 @@ interface ProfilModalProps {
 
 export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
   const location = useLocation();
+  const { logout } = useAuth();
 
   const modalItems = [
     { icon: Settings, path: '/settings', name: 'Paramètres' },
-    { icon: LogOut, path: '/logout', name: 'Se déconnecter', onClick: () => { setIsOpen(false); } },
+    { icon: LogOut, name: 'Se déconnecter', onClick: () => { 
+      logout();
+      setIsOpen(false); 
+    }},
   ];
 
   const profilInfos = [{ first_name: 'Remi', last_name: 'Lacroix', job: 'Electricien' }];
@@ -31,14 +36,25 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
         </div>
         <div className="w-auto ml-4">
           {modalItems.map((item, index) => (
-            <Link
-              key={index}
-              to={item.path}
-              className="flex items-center no-underline p-2 gap-4 text-black text-sm hover:text-gray-900 h-[50px]  "
-            >
-              <item.icon size={20} />
-              {item.name}
-            </Link>
+            item.path ? (
+              <Link
+                key={index}
+                to={item.path}
+                className="flex items-center no-underline p-2 gap-4 text-black text-sm hover:text-gray-900 h-[50px]"
+              >
+                <item.icon size={20} />
+                {item.name}
+              </Link>
+            ) : (
+              <div
+                key={index}
+                onClick={item.onClick}
+                className="flex items-center cursor-pointer p-2 gap-4 text-red-500 text-sm hover:text-red-600 h-[50px]"
+              >
+                <item.icon size={20} />
+                {item.name}
+              </div>
+            )
           ))}
         </div>
       </div>
