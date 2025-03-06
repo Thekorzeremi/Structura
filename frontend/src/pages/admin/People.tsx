@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 
 interface User {
   id: number;
@@ -117,7 +118,7 @@ export default function People() {
           email: `anonymous${userId}@example.com`,
           phone: null,
           job: null,
-          roles: [],
+          roles: ['ROLE_ANONYME'],
           skills: []
         })
       });
@@ -202,34 +203,26 @@ export default function People() {
                   <p className="text-lg font-semibold">
                     {user.firstName} {user.lastName}
                   </p>
-                  <p className="text-gray-600">{user.email}</p>
-                  {user.job && <p className="text-gray-600">Poste: {user.job}</p>}
+                  <div className="space-y-1">
+                    <p className="text-gray-600">
+                      <span className="font-medium">Rôles:</span> {user.roles.filter(role => role !== 'ROLE_USER').join(', ') || 'Utilisateur'}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="space-y-1">
-                {user.phone && <p className="text-gray-600">Tél: {user.phone}</p>}
-                <p className="text-gray-600">
-                  <span className="font-medium">Rôles:</span> {user.roles.filter(role => role !== 'ROLE_USER').join(', ') || 'Utilisateur'}
-                </p>
-                {user.skills && user.skills.length > 0 && (
-                  <p className="text-gray-600">
-                    <span className="font-medium">Compétences:</span> {user.skills.join(', ')}
-                  </p>
-                )}
-              </div>
               <div className="flex gap-2">
-                <button
+                <div
                   onClick={() => openEditModal(user)}
-                  className="bg-[#007AFF] text-white px-3 py-1 rounded"
+                  className="border border-yellow-500 text-yellow-500 px-2 py-2 flex items-center justify-center rounded"
                 >
-                  Modifier
-                </button>
-                <button
+                  <PencilIcon size={20} />
+                </div>
+                <div
                   onClick={() => handleAnonymize(user.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  className="border border-red-500 text-red-500 px-2 py-2 flex items-center justify-center rounded"
                 >
-                  Anonymiser
-                </button>
+                  <TrashIcon size={20} />
+                </div>
               </div>
             </div>
           </div>
