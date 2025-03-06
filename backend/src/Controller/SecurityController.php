@@ -240,7 +240,7 @@ final class SecurityController extends AbstractController
         }
     }
 
-    #[Route('/api/delete-account', name: 'api_delete_account', methods: ['DELETE'])]
+    #[Route('/api/delete-account', name: 'api_delete_account', methods: ['DELETE', 'OPTIONS'])]
     #[OA\Delete(
         path: '/api/delete-account',
         summary: 'Delete user account',
