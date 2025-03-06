@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface Worksite {
   id: number;
   title: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
   place: string;
   description?: string;
   skills: string[];
@@ -17,8 +19,8 @@ export default function Worksite() {
   const [selectedWorksite, setSelectedWorksite] = useState<Worksite | null>(null);
   const [formData, setFormData] = useState({
     title: '',
-    startDate: '',
-    endDate: '',
+    start_date: '',
+    end_date: '',
     place: '',
     description: '',
     skills: [] as string[],
@@ -40,6 +42,7 @@ export default function Worksite() {
       });
       if (!response.ok) throw new Error('Failed to fetch worksites');
       const data = await response.json();
+      console.log(data);
       setWorksites(data);
     } catch (error) {
       console.error('Error fetching worksites:', error);
@@ -93,8 +96,8 @@ export default function Worksite() {
     setSelectedWorksite(worksite);
     setFormData({
       title: worksite.title,
-      startDate: worksite.startDate,
-      endDate: worksite.endDate,
+      start_date: worksite.start_date,
+      end_date: worksite.end_date,
       place: worksite.place,
       description: worksite.description || '',
       skills: worksite.skills,
@@ -106,8 +109,8 @@ export default function Worksite() {
     setSelectedWorksite(null);
     setFormData({
       title: '',
-      startDate: '',
-      endDate: '',
+      start_date: '',
+      end_date: '',
       place: '',
       description: '',
       skills: [],
@@ -131,7 +134,9 @@ export default function Worksite() {
                   <div className="flex flex-col">
                     <p className="text-lg font-semibold">{worksite.title}</p>
                     <p className="text-gray-600 text-xs">Emplacement: {worksite.place}</p>
-                    <p className="text-gray-600 text-xs">Période: {worksite.startDate} - {worksite.endDate}</p>
+                    <p className="text-gray-600 text-xs">
+                      Période: {format(parseISO(worksite.start_date), 'dd MMMM yyyy', { locale: fr })} - {format(parseISO(worksite.end_date), 'dd MMMM yyyy', { locale: fr })}
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -176,8 +181,8 @@ export default function Worksite() {
                   <label className="block text-sm text-gray-600 mb-1">Start Date</label>
                   <input
                     type="date"
-                    value={formData.startDate}
-                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                    value={formData.start_date}
+                    onChange={(e) => setFormData({...formData, start_date: e.target.value})}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>
@@ -185,8 +190,8 @@ export default function Worksite() {
                   <label className="block text-sm text-gray-600 mb-1">End Date</label>
                   <input
                     type="date"
-                    value={formData.endDate}
-                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    value={formData.end_date}
+                    onChange={(e) => setFormData({...formData, end_date: e.target.value})}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>

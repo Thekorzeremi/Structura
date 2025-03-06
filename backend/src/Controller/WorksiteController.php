@@ -41,7 +41,20 @@ class WorksiteController extends AbstractController
     public function index(): JsonResponse
     {
         $worksites = $this->entityManager->getRepository(Worksite::class)->findAll();
-        $data = $this->serializer->serialize($worksites, 'json', ['groups' => ['worksite:read']]);
+        
+        $formattedWorksites = array_map(function ($worksite) {
+            return [
+                'id' => $worksite->getId(),
+                'title' => $worksite->getTitle(),
+                'start_date' => $worksite->getStartDate()->format('Y-m-d'),
+                'end_date' => $worksite->getEndDate()->format('Y-m-d'),
+                'place' => $worksite->getPlace(),
+                'description' => $worksite->getDescription(),
+                'skills' => $worksite->getSkills(),
+            ];
+        }, $worksites);
+
+        $data = $this->serializer->serialize($formattedWorksites, 'json', ['groups' => ['worksite:read']]);
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }

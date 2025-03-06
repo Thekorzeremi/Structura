@@ -197,7 +197,7 @@ export default function Settings() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#007AFF]"></div>
         </div>
       ) : (
-        <div className="mt-6 p-8 rounded-lg">
+        <div className="mt-6 p-8 rounded-lg bg-white">
           <Select items={filterItems} value={filter} onChange={(value) => setFilter(value)} />
           {filter === 'profile' && (
               <div className="mt-6 flex">
