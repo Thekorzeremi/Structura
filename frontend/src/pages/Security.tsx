@@ -81,7 +81,11 @@ const Security = () => {
       } else {
         console.error('Error message:', error.message)
       }
-      setError(error.response?.data?.error || error.message || 'Une erreur est survenue')
+      if (error.response && error.response.status === 401) {
+        setError('Informations invalides');
+      } else {
+        setError('Une erreur est survenue')
+      }
     }
   }
 
@@ -101,7 +105,11 @@ const Security = () => {
             </div>
             <div className="flex flex-col gap-y-4 mt-2">
                <span className="font-bold text-2xl">{registerMode ? "Bienvenue parmi nous" : "Ravi de vous revoir !"}</span>
-               {error && <div className="text-red-500 text-xs">{error}</div>}
+               {error && (
+                 <div className="text-red-500 text-xs font-medium">
+                   {error}
+                 </div>
+               )}
                <div className="flex flex-col gap-y-4">
                 <div className={registerMode ? "flex gap-x-2" : "hidden"}>
                   <div className="flex flex-col w-[49%]">
