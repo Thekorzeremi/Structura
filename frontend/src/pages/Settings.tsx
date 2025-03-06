@@ -22,7 +22,7 @@ export default function Settings() {
 
   const filterItems = [
     { name: "Profil", value: 'profile'},
-    { name: "Sécurité & Confidentialité", value: 'settings'}
+    { name: "Sécurité & Confidentialité", value: 'security'}
   ]
 
   useEffect(() => {
@@ -225,6 +225,40 @@ export default function Settings() {
               >
                 Enregistrer
               </button>
+            </div>
+          </div>
+        )}
+        {filter === 'security' && (
+          <div className="mt-6 flex flex-col">
+            <div className="mb-4">
+              <span className="text-lg font-semibold">Autorisations</span>
+              <div className="flex flex-col w-fit justify-start gap-y-3 mt-4">
+                <div className="flex items-center gap-x-2">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer" 
+                      name="demo"
+                    />
+                    <div className="w-9 h-5 bg-[#e5e5e5] border border-[#E5E5E5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#007AFF] peer-checked:after:bg-white"></div>
+                  </label>
+                  <label htmlFor="demo" className="text-xs font-normal cursor-pointer">M'envoyer des mails concernant les dernières offres et actualités de Structura Group</label>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer" 
+                      name="demo"
+                    />
+                    <div className="w-9 h-5 bg-[#e5e5e5] border border-[#E5E5E5] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#007AFF] peer-checked:after:bg-white"></div>
+                  </label>
+                  <label htmlFor="demo" className="text-xs font-normal cursor-pointer">J'autorise le partage de mes données de manière anonymisée avec Structura Group pour de l'analyse par des tiers </label>
+                </div>
+              </div>
+            </div>
+            <div className="mb-4">
+              <span className="text-lg font-semibold">Zone danger</span>
             </div>
           </div>
         )}
