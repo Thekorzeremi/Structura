@@ -392,9 +392,9 @@ export default function Settings() {
                   
                 </div>
                 <div className="mt-6 p-6 border border-red-200 rounded-lg bg-red-50">
-                  <h3 className="text-sm font-semibold text-red-800 mb-6">Suppression du compte</h3>
+                  <h3 className="text-sm font-semibold text-red-800 mb-6">Anonymiser mon compte</h3>
                   <p className="text-xs text-red-600 mb-6">
-                    Attention : La suppression de votre compte est irréversible. Toutes vos données seront définitivement effacées.
+                    Attention : L'annonymisation de votre compte est irréversible. Toutes vos données seront définitivement supprimées.
                   </p>
                   {!showDeleteConfirm ? (
                     <div className="flex justify-end">
@@ -402,7 +402,7 @@ export default function Settings() {
                         onClick={() => setShowDeleteConfirm(true)}
                         className="px-4 py-2 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
                       >
-                        Supprimer mon compte
+                        Anonymiser mon compte
                       </button>
                     </div>
                   ) : (
