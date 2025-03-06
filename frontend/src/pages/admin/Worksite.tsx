@@ -18,13 +18,15 @@ interface Worksite {
 interface User {
   id: number;
   name: string;
+  first_name: string;
+  last_name: string;
   roles: string[];
 }
 
 export default function Worksite() {
   const { token } = useAuth();
   const [worksites, setWorksites] = useState<Worksite[]>([]);
-  const [managers, setManagers] = useState<User[]>([]); 
+  const [managers, setManagers] = useState<User[]>([]);
   const [selectedWorksite, setSelectedWorksite] = useState<Worksite | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -49,7 +51,7 @@ export default function Worksite() {
     try {
       const response = await fetch('http://localhost:8000/api/worksites', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch worksites');
@@ -66,7 +68,7 @@ export default function Worksite() {
     try {
       const response = await fetch('http://localhost:8000/api/worksites/managers', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch managers');
@@ -89,7 +91,7 @@ export default function Worksite() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -108,7 +110,7 @@ export default function Worksite() {
       const response = await fetch(`http://localhost:8000/api/worksites/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (!response.ok) throw new Error('Failed to delete worksite');
@@ -168,36 +170,46 @@ export default function Worksite() {
         </div>
       ) : (
         <div className="mt-4">
-          {worksites.map((worksite) => (
-            <div key={worksite.id} className="bg-white rounded-lg p-4 shadow-sm mb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex gap-4 items-center">
-                  <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
-                  <div className="flex flex-col">
-                    <p className="text-lg font-semibold">{worksite.title}</p>
-                    <p className="text-gray-600 text-xs">Emplacement: {worksite.place}</p>
-                    <p className="text-gray-600 text-xs">
-                      Période: {format(parseISO(worksite.start_date), 'dd MMMM yyyy', { locale: fr })} - {format(parseISO(worksite.end_date), 'dd MMMM yyyy', { locale: fr })}
-                    </p>
+          {worksites.map(worksite => {
+            const manager = managers.find(m => m.id === worksite.manager_id);
+            return (
+              <div key={worksite.id} className="bg-white rounded-lg p-4 shadow-sm mb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-4 items-center">
+                    <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
+                    <div className="flex flex-col">
+                      <p className="text-lg font-semibold">{worksite.title}</p>
+                      <p className="text-gray-600 text-xs">Emplacement: {worksite.place}</p>
+                      <p className="text-gray-600 text-xs">
+                        Période:{' '}
+                        {format(parseISO(worksite.start_date), 'dd MMMM yyyy', { locale: fr })} -{' '}
+                        {format(parseISO(worksite.end_date), 'dd MMMM yyyy', { locale: fr })}
+                      </p>
+                      {manager && (
+                        <p className="text-gray-600 text-xs">
+                          Manager: {manager.first_name} {manager.last_name} (ID: {manager.id})
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => openEditModal(worksite)}
+                      className="border border-yellow-500 text-yellow-500 px-2 py-2 rounded"
+                    >
+                      <PencilIcon size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteWorksite(worksite.id)}
+                      className="border border-red-500 text-red-500 px-2 py-2 rounded"
+                    >
+                      <TrashIcon size={20} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => openEditModal(worksite)}
-                    className="border border-yellow-500 text-yellow-500 px-2 py-2 rounded"
-                  >
-                    <PencilIcon size={20} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteWorksite(worksite.id)}
-                    className="border border-red-500 text-red-500 px-2 py-2 rounded"
-                  >
-                    <TrashIcon size={20} />
-                  </button>
-                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -215,7 +227,7 @@ export default function Worksite() {
                     type="text"
                     placeholder="Title"
                     value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    onChange={e => setFormData({ ...formData, title: e.target.value })}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>
@@ -224,7 +236,7 @@ export default function Worksite() {
                   <input
                     type="date"
                     value={formData.start_date}
-                    onChange={(e) => setFormData({...formData, start_date: e.target.value})}
+                    onChange={e => setFormData({ ...formData, start_date: e.target.value })}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>
@@ -233,7 +245,7 @@ export default function Worksite() {
                   <input
                     type="date"
                     value={formData.end_date}
-                    onChange={(e) => setFormData({...formData, end_date: e.target.value})}
+                    onChange={e => setFormData({ ...formData, end_date: e.target.value })}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>
@@ -243,7 +255,7 @@ export default function Worksite() {
                     type="text"
                     placeholder="Place"
                     value={formData.place}
-                    onChange={(e) => setFormData({...formData, place: e.target.value})}
+                    onChange={e => setFormData({ ...formData, place: e.target.value })}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>
@@ -252,16 +264,18 @@ export default function Worksite() {
                   <textarea
                     placeholder="Description"
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    onChange={e => setFormData({ ...formData, description: e.target.value })}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
                 </div>
                 <div className="flex flex-col w-full">
-                  <label htmlFor="skills" className="text-xs font-normal mb-1">Compétences</label>
+                  <label htmlFor="skills" className="text-xs font-normal mb-1">
+                    Compétences
+                  </label>
                   <div className="flex flex-wrap gap-2 p-2 min-h-[42px] rounded bg-[#f7f9fc] border border-[#E5E5E5]">
                     {formData.skills.map((skill, index) => (
-                      <div 
-                        key={index} 
+                      <div
+                        key={index}
                         className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#E5E5E5] hover:border-[#007AFF] transition-colors"
                       >
                         <span className="text-sm">{skill}</span>
@@ -275,11 +289,11 @@ export default function Worksite() {
                         </button>
                       </div>
                     ))}
-                    <input 
+                    <input
                       type="text"
                       placeholder="Ajouter une compétence"
                       value={newSkill}
-                      onChange={(e) => setNewSkill(e.target.value)}
+                      onChange={e => setNewSkill(e.target.value)}
                       onKeyDown={handleAddSkill}
                       className="text-sm bg-transparent outline-none placeholder:text-xs flex-1 min-w-[150px] focus:placeholder:text-[#007AFF]"
                     />
@@ -287,14 +301,38 @@ export default function Worksite() {
                 </div>
                 <div>
                   <label className="block text-sm text-gray-600 mb-1">Manager</label>
+                  <div className="flex items-center gap-2 mb-2">
+                    {formData.manager_id && (
+                      <>
+                        <span className="text-sm text-gray-700">Manager actuel :</span>
+                        {(() => {
+                          const currentManager = managers.find(
+                            manager => manager.id === formData.manager_id
+                          );
+                          return (
+                            currentManager && (
+                              <span className="text-sm text-gray-700">
+                                {currentManager.first_name} {currentManager.last_name}
+                              </span>
+                            )
+                          );
+                        })()}
+                      </>
+                    )}
+                  </div>
                   <select
                     value={formData.manager_id !== undefined ? formData.manager_id.toString() : ''}
-                    onChange={(e) => setFormData({...formData, manager_id: e.target.value ? Number(e.target.value) : undefined})}
+                    onChange={e => {
+                      const managerId = e.target.value ? Number(e.target.value) : undefined;
+                      setFormData({ ...formData, manager_id: managerId });
+                    }}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   >
-                    <option value="">Select a manager</option>
-                    {managers.map((manager) => (
-                      <option key={manager.id} value={manager.id.toString()}>{manager.name}</option>
+                    <option value="">Sélectionner un manager</option>
+                    {managers.map(manager => (
+                      <option key={manager.id} value={manager.id.toString()}>
+                        {manager.first_name} {manager.last_name}
+                      </option>
                     ))}
                   </select>
                 </div>

@@ -30,10 +30,7 @@ export default function People() {
   const [newSkill, setNewSkill] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Available role options
-  const availableRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WORKER'];
-  // Available skill options
-  const availableSkills = ['Menuiserie', 'Électricité', 'Plomberie', 'Maçonnerie', 'Peinture', 'Management', 'Sécurité'];
+  const availableRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_MANAGER'];
 
   const fetchUsers = async () => {
     try {

@@ -172,6 +172,7 @@ class WorksiteController extends AbstractController
                     new OA\Property(property: 'place', type: 'string'),
                     new OA\Property(property: 'description', type: 'string'),
                     new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string')),
+                    new OA\Property(property: 'manager_id', type: 'integer'),
                 ]
             )
         ),
@@ -211,6 +212,14 @@ class WorksiteController extends AbstractController
         }
         if (isset($data['skills'])) {
             $worksite->setSkills($data['skills']);
+        }
+        if (isset($data['manager_id'])) {
+            $manager = $this->entityManager->getRepository(User::class)->find($data['manager_id']);
+            if ($manager) {
+                $worksite->setManager($manager);
+            } else {
+                return $this->json(['error' => 'Manager not found'], Response::HTTP_NOT_FOUND);
+            }
         }
 
         $this->entityManager->flush();
