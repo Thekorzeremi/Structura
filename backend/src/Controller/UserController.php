@@ -46,10 +46,28 @@ class UserController extends AbstractController
     )]
     public function index(): JsonResponse
     {
-        $users = $this->entityManager->getRepository(User::class)->findAll();
-        $data = $this->serializer->serialize($users, 'json', ['groups' => ['user:read']]);
+        try {
+            $users = $this->entityManager->getRepository(User::class)->findAll();
+            $userData = [];
 
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+            foreach ($users as $user) {
+                $userData[] = [
+                    'id' => $user->getId(),
+                    'email' => $user->getEmail(),
+                    'firstName' => $user->getFirstName(),
+                    'lastName' => $user->getLastName(),
+                    'phone' => $user->getPhone(),
+                    'roles' => $user->getRoles(),
+                    'skills' => $user->getSkills()
+                ];
+            }
+
+            return new JsonResponse($userData);
+        } catch (\Exception $e) {
+            $this->logger->error('[UserController] Error - Index - '.$e->getMessage(), ['exception' => $e]);
+
+            return new JsonResponse(['error' => 'Une erreur est survenue'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     
