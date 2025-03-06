@@ -103,18 +103,26 @@ export default function People() {
     }
   };
 
-  const handleDelete = async (userId: number) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
-
+  const handleAnonymize = async (userId: number) => {
     try {
       const response = await fetch(`http://localhost:8000/api/users/${userId}`, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
-        }
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: 'Anonymous',
+          last_name: 'User',
+          email: `anonymous${userId}@example.com`,
+          phone: null,
+          job: null,
+          roles: [],
+          skills: []
+        })
       });
 
-      if (!response.ok) throw new Error('Erreur lors de la suppression');
+      if (!response.ok) throw new Error('Erreur lors de l\'anonymisation');
       
       fetchUsers();
     } catch (error) {
@@ -217,10 +225,10 @@ export default function People() {
                   Modifier
                 </button>
                 <button
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleAnonymize(user.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded"
                 >
-                  Supprimer
+                  Anonymiser
                 </button>
               </div>
             </div>
