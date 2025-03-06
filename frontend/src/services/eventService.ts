@@ -19,6 +19,12 @@ interface Event {
     end_date: string;
     description: string;
     place: string;
+    manager: {
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+    };
   };
 }
 

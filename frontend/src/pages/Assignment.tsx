@@ -13,9 +13,9 @@ interface Event {
   end_date: string;
   user: {
     id: number;
-    email: string;
     firstName: string;
     lastName: string;
+    email: string;
   };
   worksite: {
     id: number;
@@ -24,6 +24,12 @@ interface Event {
     end_date: string;
     description: string;
     place: string;
+    manager: {
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+    };
   };
 }
 
@@ -126,29 +132,11 @@ export default function Assignment() {
                 key={event.id}
                 className="bg-white rounded-lg p-4 shadow-sm border border-[#E5E5E5] hover:border-[#007AFF] transition-colors"
               >
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-shrink-0">
-                        <img
-                          className="h-10 w-10 rounded-full object-cover"
-                          src="/profile_pic.png"
-                          alt={`${event.user.firstName} ${event.user.lastName}`}
-                        />
-                      </div>
-                      <div className="text-xs text-gray-500 flex flex-col">
-                        <span className="text-sm font-medium text-gray-900">{event.worksite.title}</span>
-                        {event.worksite.place}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm text-gray-900">
-                      {format(parseISO(event.start_date), 'dd MMM yyyy HH:mm', { locale: fr })}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {format(parseISO(event.end_date), 'dd MMM yyyy HH:mm', { locale: fr })}
-                    </div>
+                <div className='flex items-center gap-4'>
+                  <img src={`/worksite/${Math.floor(Math.random() * 4) + 1}.jpg`} className="w-12 h-12 object-cover rounded-full" />
+                  <div className='flex flex-col'>
+                    <span className='text-lg font-semibold'>{event.worksite.title}</span>
+                    <span className='text-md text-gray-500'>{event.worksite.place}</span>
                   </div>
                 </div>
               </div>
