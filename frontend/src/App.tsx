@@ -6,8 +6,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import MainLayout from './layouts/MainLayout';
 import Security from './pages/Security';
 import Assignment from './pages/Assignment';
-import Worksite from './pages/Worksite';
-import People from './pages/People';
+import Worksite from './pages/admin/Worksite';
+import People from './pages/admin/People';
 import Settings from './pages/Settings';
 
 function App() {
