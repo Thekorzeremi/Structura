@@ -19,6 +19,10 @@ export default function Settings() {
   const [filter, setFilter] = useState('profile');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [newSkill, setNewSkill] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   const filterItems = [
     { name: "Profil", value: 'profile'},
@@ -99,6 +103,39 @@ export default function Settings() {
     }
   };
 
+  const handlePasswordChange = async () => {
+    try {
+      setPasswordError('');
+      setPasswordSuccess('');
+
+      const response = await fetch('http://localhost:8000/api/change-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          email: userData?.email,
+          currentPassword,
+          newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPasswordError(data.error || 'Une erreur est survenue');
+        return;
+      }
+
+      setPasswordSuccess('Mot de passe modifié avec succès');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (error) {
+      setPasswordError('Une erreur est survenue lors de la modification du mot de passe');
+    }
+  };
+
   return (
     <div className="pl-8 pt-6">
       <span className="text-3xl font-semibold">Profil & Paramètres</span>
@@ -161,7 +198,7 @@ export default function Settings() {
               </div>
               <div className="mt-4">
                 <span className="text-lg font-semibold">Informations professionnelles</span>
-                <div className="flex mt-4 gap-x-2 w-    full">
+                <div className="flex mt-4 gap-x-2 w-full">
                   <div className="flex flex-col w-[50%]">
                     <label htmlFor="roles" className="text-xs font-normal mb-1">Rôle <span className="text-gray-400">(non modifiable)</span></label>
                     <input 
@@ -257,8 +294,60 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            <div className="mb-4">
+            <div className="mt-4">
               <span className="text-lg font-semibold">Zone danger</span>
+              <div className="mt-4 max-w-md">
+                <div className="p-4 border border-red-200 rounded-lg bg-red-50">
+                  <h3 className="text-sm font-medium text-red-800 mb-4">Modification du mot de passe</h3>
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-1">
+                      <label htmlFor="currentPassword" className="text-xs text-gray-600">
+                        Mot de passe actuel
+                      </label>
+                      <input
+                        type="password"
+                        id="currentPassword"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="w-full px-4 py-2 text-sm bg-[#f7f9fc] border border-[#E5E5E5] rounded-lg focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] placeholder:text-xs"
+                        placeholder="Entrez votre mot de passe actuel"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label htmlFor="newPassword" className="text-xs text-gray-600">
+                        Nouveau mot de passe
+                      </label>
+                      <input
+                        type="password"
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full px-4 py-2 text-sm bg-[#f7f9fc] border border-[#E5E5E5] rounded-lg focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] placeholder:text-xs"
+                        placeholder="Entrez votre nouveau mot de passe"
+                      />
+                    </div>
+                    {passwordError && (
+                      <div className="text-xs text-red-600">{passwordError}</div>
+                    )}
+                    {passwordSuccess && (
+                      <div className="text-xs text-green-600">{passwordSuccess}</div>
+                    )}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={handlePasswordChange}
+                        disabled={!currentPassword || !newPassword}
+                        className={`px-4 py-2 text-xs rounded-lg transition-colors ${
+                          !currentPassword || !newPassword
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-red-600 text-white hover:bg-red-700'
+                        }`}
+                      >
+                        Modifier le mot de passe
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

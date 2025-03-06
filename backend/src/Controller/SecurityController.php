@@ -176,4 +176,67 @@ final class SecurityController extends AbstractController
             return $this->json(['error' => 'Failed to create token'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    #[Route('/api/change-password', name: 'api_change_password', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/api/change-password',
+        summary: 'Change user password',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email', 'currentPassword', 'newPassword'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email'),
+                    new OA\Property(property: 'currentPassword', type: 'string', format: 'password'),
+                    new OA\Property(property: 'newPassword', type: 'string', format: 'password'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Password successfully changed',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Invalid input'),
+            new OA\Response(response: 401, description: 'Invalid current password'),
+        ]
+    )]
+    public function changePassword(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $passwordHasher
+    ): JsonResponse {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $this->logger->info('[SecurityController] ChangePassword - Request received');
+
+            if (!isset($data['email'], $data['currentPassword'], $data['newPassword'])) {
+                return $this->json(['error' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+            if (!$user) {
+                return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            if (!$passwordHasher->isPasswordValid($user, $data['currentPassword'])) {
+                return $this->json(['error' => 'Current password is incorrect'], Response::HTTP_UNAUTHORIZED);
+            }
+
+            $user->setPassword($passwordHasher->hashPassword($user, $data['newPassword']));
+            $entityManager->flush();
+
+            $this->logger->info('[SecurityController] ChangePassword - Password successfully changed');
+            return $this->json(['message' => 'Password successfully changed'], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            $this->logger->error('[SecurityController] ChangePassword - Error', ['exception' => $e]);
+            return $this->json(['error' => 'An error occurred while changing the password'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
