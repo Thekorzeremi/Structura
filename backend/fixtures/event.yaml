@@ -86,4 +86,10 @@ App\Entity\Event:
     end_date: '<dateTimeBetween("now", "+1 day")>'
     user: '@remi'
     worksite: '@worksite_12'
-  
+  event_passed:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("-1 year", "-1 month")>'
+    end_date: '<dateTimeBetween("-1 year", "-1 month")>'
+    user: '@remi'
+    worksite: '@worksite_12'

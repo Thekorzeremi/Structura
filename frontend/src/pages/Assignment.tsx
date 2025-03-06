@@ -148,8 +148,8 @@ export default function Assignment() {
                     </div>
                   </div>
                   <div className='flex flex-col'>
-                    <span className='text-xs text-gray-500 font-bold'>Du <span className='font-normal'>{event.worksite.start_date}</span></span>
-                    <span className='text-xs text-gray-500 font-bold'>Au <span className='font-normal'>{event.worksite.end_date}</span></span>
+                    <span className='text-xs text-gray-500 font-bold'>Du <span className='font-normal'>{event.start_date}</span></span>
+                    <span className='text-xs text-gray-500 font-bold'>Au <span className='font-normal'>{event.end_date}</span></span>
                   </div>
                 </div>
               </div>
