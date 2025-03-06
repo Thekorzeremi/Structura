@@ -4,6 +4,7 @@ import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useAuth } from '../contexts/AuthContext';
 import Select from '../components/ui/Select';
+import EventModal from '../components/modals/eventModal';
 
 interface Event {
   id: number;
@@ -34,7 +35,7 @@ interface Event {
 }
 
 const filterItems = [
-  { name: 'En cours', value: 'current' },
+  { name: `En cours`, value: 'current' },
   { name: 'Passé', value: 'past' },
   { name: 'A venir', value: 'future' }
 ];
@@ -43,6 +44,8 @@ export default function Assignment() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('current');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const { token, user } = useAuth();
   const decodedToken = token ? JSON.parse(atob(token.split('.')[1])) : null;
   const userEmail = decodedToken?.username;
@@ -130,10 +133,14 @@ export default function Assignment() {
             {getFilteredEvents().map((event) => (
               <div
                 key={event.id}
-                className="bg-white rounded-lg p-4 shadow-sm border border-[#E5E5E5] hover:border-[#007AFF] transition-colors"
+                className="bg-white rounded-lg p-4 shadow-sm border border-[#E5E5E5] hover:border-[#007AFF] transition-colors cursor-pointer"
+                onClick={() => {
+                  setSelectedEvent(event);
+                  setModalOpen(true);
+                }}
               >
                 <div className='flex items-center gap-4'>
-                  <img src={`/worksite/${Math.floor(Math.random() * 4) + 1}.jpg`} className="w-12 h-12 object-cover rounded-full" />
+                  <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
                   <div className='flex flex-col'>
                     <span className='text-lg font-semibold'>{event.worksite.title}</span>
                     <span className='text-md text-gray-500'>{event.worksite.place}</span>
@@ -144,6 +151,14 @@ export default function Assignment() {
           </div>
         )}
       </div>
+      <EventModal 
+        event={selectedEvent || events[0]}
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedEvent(null);
+        }}
+      />
     </div>
   );
 }
