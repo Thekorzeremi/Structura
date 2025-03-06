@@ -24,9 +24,7 @@ function App() {
                 <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
                   <>
                     <Navbar />
-                    <div className="pl-[75px]">
-                      <h1 className="text-2xl p-6">Bienvenue sur Structura</h1>
-                    </div>
+                    <Home />
                   </>
                 </ProtectedRoute>
               }
@@ -37,9 +35,7 @@ function App() {
                 <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
                   <>
                     <Navbar />
-                    <div className="pl-[75px]">
-                      <h1 className="text-2xl p-6">Affectations</h1>
-                    </div>
+                    <Assignment />
                   </>
                 </ProtectedRoute>
               }
@@ -50,9 +46,7 @@ function App() {
                 <ProtectedRoute roles={['ROLE_ADMIN']}>
                   <>
                     <Navbar />
-                    <div className="pl-[75px]">
-                      <h1 className="text-2xl p-6">Chantiers</h1>
-                    </div>
+                    <Worksite />
                   </>
                 </ProtectedRoute>
               }
@@ -63,9 +57,7 @@ function App() {
                 <ProtectedRoute roles={['ROLE_ADMIN']}>
                   <>
                     <Navbar />
-                    <div className="pl-[75px]">
-                      <h1 className="text-2xl p-6">Personnes</h1>
-                    </div>
+                    <People />
                   </>
                 </ProtectedRoute>
               }
@@ -76,9 +68,7 @@ function App() {
                 <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
                   <>
                     <Navbar />
-                    <div className="pl-[75px]">
-                      <h1 className="text-2xl p-6">Paramètres</h1>
-                    </div>
+                    <Settings />
                   </>
                 </ProtectedRoute>
               }
