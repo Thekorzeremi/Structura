@@ -201,6 +201,7 @@ class UserController extends AbstractController
                         new OA\Property(property: 'email', type: 'string'),
                         new OA\Property(property: 'firstName', type: 'string'),
                         new OA\Property(property: 'lastName', type: 'string'),
+                        new OA\Property(property: 'job', type: 'string'),
                         new OA\Property(property: 'phone', type: 'string'),
                         new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string')),
                         new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
@@ -238,11 +239,148 @@ class UserController extends AbstractController
             'email' => $user->getEmail(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
+            'job' => $user->getJob(),
             'phone' => $user->getPhone(),
             'roles' => $user->getRoles(),
             'skills' => $user->getSkills()
         ];
         
         return new JsonResponse($responseData);
+    }
+
+    #[Route('/me/update', name: 'update_current_user', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/api/users/me/update',
+        summary: 'Update current user information',
+        tags: ['Users'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email'],
+                properties: [
+                    new OA\Property(property: 'email', type: 'string', format: 'email'),
+                    new OA\Property(property: 'firstName', type: 'string', minLength: 1),
+                    new OA\Property(property: 'lastName', type: 'string', minLength: 1),
+                    new OA\Property(property: 'phone', type: 'string', pattern: '^\+?[0-9]{10,}$'),
+                    new OA\Property(property: 'job', type: 'string'),
+                    new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'User updated successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer'),
+                        new OA\Property(property: 'email', type: 'string'),
+                        new OA\Property(property: 'firstName', type: 'string'),
+                        new OA\Property(property: 'lastName', type: 'string'),
+                        new OA\Property(property: 'job', type: 'string'),
+                        new OA\Property(property: 'phone', type: 'string'),
+                        new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string')),
+                        new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 400, 
+                description: 'Invalid request data',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'error', type: 'string')
+                    ]
+                )
+            ),
+            new OA\Response(response: 404, description: 'User not found')
+        ]
+    )]
+    public function updateCurrentUser(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!isset($data['email']) || empty($data['email'])) {
+                return new JsonResponse(
+                    ['error' => 'Email is required'], 
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            $user = $this->userRepository->findOneBy(['email' => $data['email']]);
+
+            if (!$user) {
+                return new JsonResponse(
+                    ['error' => 'User not found'], 
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            if (isset($data['firstName'])) {
+                if (empty(trim($data['firstName']))) {
+                    return new JsonResponse(
+                        ['error' => 'First name cannot be empty'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+                $user->setFirstName(trim($data['firstName']));
+            }
+            
+            if (isset($data['lastName'])) {
+                if (empty(trim($data['lastName']))) {
+                    return new JsonResponse(
+                        ['error' => 'Last name cannot be empty'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+                $user->setLastName(trim($data['lastName']));
+            }
+            
+            if (isset($data['phone'])) {
+                $phone = preg_replace('/[^0-9+]/', '', $data['phone']);
+                if (!preg_match('/^\+?[0-9]{10,}$/', $phone)) {
+                    return new JsonResponse(
+                        ['error' => 'Invalid phone number format'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+                $user->setPhone($phone);
+            }
+            
+            if (isset($data['job'])) {
+                $user->setJob(trim($data['job']));
+            }
+            
+            if (isset($data['skills'])) {
+                if (!is_array($data['skills'])) {
+                    return new JsonResponse(
+                        ['error' => 'Skills must be an array'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+                $skills = array_unique(array_filter(array_map('trim', $data['skills'])));
+                $user->setSkills($skills);
+            }
+
+            $this->entityManager->flush();
+
+            return new JsonResponse([
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'job' => $user->getJob(),
+                'phone' => $user->getPhone(),
+                'roles' => $user->getRoles(),
+                'skills' => $user->getSkills()
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['error' => 'An error occurred while updating the user'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
     }
 }
