@@ -28,6 +28,7 @@ export default function People() {
     skills: [] as string[]
   });
   const [newSkill, setNewSkill] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Available role options
   const availableRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WORKER'];
@@ -36,6 +37,7 @@ export default function People() {
 
   const fetchUsers = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch('http://localhost:8000/api/users', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,6 +53,8 @@ export default function People() {
       setUsers(data);
     } catch (error) {
       console.error('Error fetching users:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -193,41 +197,47 @@ export default function People() {
         <h1 className="text-3xl font-semibold">Personnes</h1>
       </div>
 
-      <div className="mt-4">
-        {users.map((user: User) => (
-          <div key={user.id} className="bg-white rounded-lg p-4 shadow-sm mb-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
-                <div className="ml-4">
-                  <p className="text-lg font-semibold">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <div className="space-y-1">
-                    <p className="text-gray-600">
-                      <span className="font-medium">Rôles:</span> {user.roles.filter(role => role !== 'ROLE_USER').join(', ') || 'Utilisateur'}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#007AFF]"></div>
+        </div>
+      ) : (
+        <div className="mt-4">
+          {users.map((user: User) => (
+            <div key={user.id} className="bg-white rounded-lg p-4 shadow-sm mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
+                  <div className="ml-4">
+                    <p className="text-lg font-semibold">
+                      {user.firstName} {user.lastName}
                     </p>
+                    <div className="space-y-1">
+                      <p className="text-gray-600">
+                        <span className="font-medium">Rôles:</span> {user.roles.filter(role => role !== 'ROLE_USER').join(', ') || 'Utilisateur'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <div
+                    onClick={() => openEditModal(user)}
+                    className="border border-yellow-500 text-yellow-500 px-2 py-2 flex items-center justify-center rounded"
+                  >
+                    <PencilIcon size={20} />
+                  </div>
+                  <div
+                    onClick={() => handleAnonymize(user.id)}
+                    className="border border-red-500 text-red-500 px-2 py-2 flex items-center justify-center rounded"
+                  >
+                    <TrashIcon size={20} />
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <div
-                  onClick={() => openEditModal(user)}
-                  className="border border-yellow-500 text-yellow-500 px-2 py-2 flex items-center justify-center rounded"
-                >
-                  <PencilIcon size={20} />
-                </div>
-                <div
-                  onClick={() => handleAnonymize(user.id)}
-                  className="border border-red-500 text-red-500 px-2 py-2 flex items-center justify-center rounded"
-                >
-                  <TrashIcon size={20} />
-                </div>
-              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn">
