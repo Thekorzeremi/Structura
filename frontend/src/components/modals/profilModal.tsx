@@ -12,10 +12,6 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
   const { logout, user } = useAuth();
 
   const modalItems = [
-    { icon: Settings, name: 'Paramètres', onClick: () => {
-      setIsOpen(false);
-      navigate('/settings');
-    }},
     { icon: LogOut, name: 'Se déconnecter', onClick: () => { 
       logout();
       setIsOpen(false); 

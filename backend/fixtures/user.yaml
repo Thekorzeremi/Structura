@@ -21,7 +21,7 @@ App\Entity\User:
   boss:
     first_name: '<firstName()>'
     last_name: '<lastName()>'
-    roles: ['ROLE_BOSS']
+    roles: ['ROLE_ADMIN']
     email: 'admin@admin.admin'
     password: '\$2y\$13\$V.FVzRKDHxai6nmzj411gOBoMEaxih4EQEs0I2NUTsnegWFeArMEa'
     skills: '<randomElements(["Direction", "Stratégie", "Management", "Finance", "Développement"], 3)>'

@@ -5,7 +5,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import MainLayout from './layouts/MainLayout';
 import Security from './pages/Security';
-import Home from './pages/Home';
 import Assignment from './pages/Assignment';
 import Worksite from './pages/Worksite';
 import People from './pages/People';
@@ -19,16 +18,6 @@ function App() {
           <Route path="/login" element={<Security />} />
           <Route
             path="/"
-            element={
-              <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
-                <MainLayout>
-                  <Home />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/assignment"
             element={
               <ProtectedRoute roles={['ROLE_USER', 'ROLE_ADMIN']}>
                 <MainLayout>
