@@ -9,7 +9,7 @@ interface ProfilModalProps {
 export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const modalItems = [
     { icon: Settings, name: 'Paramètres', onClick: () => {
@@ -22,8 +22,6 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
     }},
   ];
 
-  const profilInfos = [{ first_name: 'Remi', last_name: 'Lacroix', job: 'Electricien' }];
-
   return (
     <>
       <div className="fixed inset-0" onClick={() => setIsOpen(false)} />
@@ -32,22 +30,25 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
           <img className="rounded-full w-[28px] h-[28px]" src="/profile_pic.png" alt="logo" />
           <div className="flex flex-col items-start">
             <span className="text-black text-sm">
-              {profilInfos.map((info) => info.first_name)}{' '}
-              {profilInfos.map((info) => info.last_name)}
+              {user ? `${user.firstName} ${user.lastName}` : 'Chargement...'}
             </span>
-            <span className="text-gray-500 text-xs">{profilInfos.map((info) => info.job)}</span>
+            {user?.job && (
+              <span className="text-gray-500 text-xs">
+                {user.job}
+              </span>
+            )}
           </div>
         </div>
         <div className="w-auto ml-4">
           {modalItems.map((item, index) => (
-              <div
-                key={index}
-                onClick={item.onClick}
-                className="flex items-center cursor-pointer p-2 gap-4 text-black text-sm hover:text-gray-500 h-[50px]"
-              >
-                <item.icon size={20} />
-                {item.name}
-              </div>
+            <div
+              key={index}
+              onClick={item.onClick}
+              className="flex items-center cursor-pointer p-2 gap-4 text-black text-sm hover:text-gray-500 h-[50px]"
+            >
+              <item.icon size={20} />
+              {item.name}
+            </div>
           ))}
         </div>
       </div>

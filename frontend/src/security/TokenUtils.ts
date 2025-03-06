@@ -1,6 +1,9 @@
 interface JwtPayload {
   roles: string[];
   exp: number;
+  firstName: string;
+  lastName: string;
+  job: string | null;
 }
 
 export const decodeToken = (token: string): JwtPayload | null => {

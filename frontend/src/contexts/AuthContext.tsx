@@ -3,9 +3,17 @@ import axios from 'axios';
 import { decodeToken } from '../security/TokenUtils';
 import { useNavigate } from 'react-router-dom';
 
+interface User {
+  firstName: string;
+  lastName: string;
+  job: string | null;
+  roles: string[];
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
+  user: User | null;
   roles: string[];
   login: (token: string) => void;
   logout: () => void;
@@ -22,6 +30,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [roles, setRoles] = useState<string[]>([]);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -36,6 +45,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (!decoded) {
         throw new Error('Invalid token');
       }
+      
+      const userData: User = {
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+        job: decoded.job,
+        roles: decoded.roles || []
+      };
+
+      setUser(userData);
       setRoles(decoded.roles || []);
       setToken(newToken);
       setIsAuthenticated(true);
@@ -52,6 +70,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsAuthenticated(false);
     setToken(null);
     setRoles([]);
+    setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('rememberMe');
     delete axios.defaults.headers.common['Authorization'];
@@ -59,7 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, roles, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, token, user, roles, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
