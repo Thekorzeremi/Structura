@@ -366,8 +366,8 @@ export default function Settings() {
             <div className="mt-4">
               <span className="text-lg font-semibold">Zone danger</span>
               <div className="mt-6 max-w-md">
-                <div className="p-6 border border-red-200 rounded-lg bg-red-50">
-                  <h3 className="text-sm font-semibold text-red-800 mb-6">Modification du mot de passe</h3>
+                <div className="flex flex-col">
+                  <h3 className="text-sm font-semibold text-black mb-6">Modification du mot de passe</h3>
                   <div className="space-y-6">
                     <div className="flex flex-col gap-1">
                       <label htmlFor="currentPassword" className="text-xs text-gray-600">
@@ -421,7 +421,8 @@ export default function Settings() {
                   </div>
                   
                 </div>
-                <div className="mt-6 p-6 border border-red-200 rounded-lg bg-red-50">
+                <div className="w-full bg-gray-200 h-[1px] mt-8 mb-8"></div>
+                <div className="flex flex-col mt-4">
                   <h3 className="text-sm font-semibold text-red-800 mb-6">Anonymiser mon compte</h3>
                   <p className="text-xs text-red-600 mb-6">
                     Attention : L'annonymisation de votre compte est irréversible. Toutes vos données seront définitivement supprimées.
