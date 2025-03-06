@@ -127,6 +127,7 @@ class EventController extends AbstractController
         $eventsData = [];
 
         foreach ($events as $event) {
+            $worksite = $event->getWorksite();
             $eventsData[] = [
                 'id' => $event->getId(),
                 'type' => $event->getType(),
@@ -138,6 +139,14 @@ class EventController extends AbstractController
                     'email' => $event->getUser()->getEmail(),
                     'firstName' => $event->getUser()->getFirstName(),
                     'lastName' => $event->getUser()->getLastName()
+                ],
+                'worksite' => [
+                    'id' => $worksite->getId(),
+                    'title' => $worksite->getTitle(),
+                    'start_date' => $worksite->getStartDate()->format('Y-m-d H:i:s'),
+                    'end_date' => $worksite->getEndDate()->format('Y-m-d H:i:s'),
+                    'description' => $worksite->getDescription(),
+                    'place' => $worksite->getPlace()
                 ]
             ];
         }

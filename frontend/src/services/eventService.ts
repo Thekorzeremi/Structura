@@ -12,6 +12,14 @@ interface Event {
     firstName: string;
     lastName: string;
   };
+  worksite: {
+    id: number;
+    title: string;
+    start_date: string;
+    end_date: string;
+    description: string;
+    place: string;
+  };
 }
 
 const API_URL = 'http://localhost:8000/api';
