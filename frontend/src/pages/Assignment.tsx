@@ -139,11 +139,17 @@ export default function Assignment() {
                   setModalOpen(true);
                 }}
               >
-                <div className='flex items-center gap-4'>
-                  <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
+                <div className='flex items-center gap-4 justify-between'>
+                  <div className="flex gap-4">
+                    <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
+                    <div className='flex flex-col'>
+                      <span className='text-lg font-semibold'>{event.worksite.title}</span>
+                      <span className='text-md text-gray-500'>{event.worksite.place}</span>
+                    </div>
+                  </div>
                   <div className='flex flex-col'>
-                    <span className='text-lg font-semibold'>{event.worksite.title}</span>
-                    <span className='text-md text-gray-500'>{event.worksite.place}</span>
+                    <span className='text-xs text-gray-500 font-bold'>Du <span className='font-normal'>{event.worksite.start_date}</span></span>
+                    <span className='text-xs text-gray-500 font-bold'>Au <span className='font-normal'>{event.worksite.end_date}</span></span>
                   </div>
                 </div>
               </div>
