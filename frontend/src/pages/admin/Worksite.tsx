@@ -14,7 +14,7 @@ interface Worksite {
 }
 
 export default function Worksite() {
-  const { token } = useAuth(); 
+  const { token } = useAuth();
   const [worksites, setWorksites] = useState<Worksite[]>([]);
   const [selectedWorksite, setSelectedWorksite] = useState<Worksite | null>(null);
   const [formData, setFormData] = useState({
@@ -26,14 +26,15 @@ export default function Worksite() {
     skills: [] as string[],
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [newSkill, setNewSkill] = useState(''); 
 
   useEffect(() => {
     fetchWorksites();
   }, []);
 
   const fetchWorksites = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       const response = await fetch('http://localhost:8000/api/worksites', {
         headers: {
@@ -42,12 +43,11 @@ export default function Worksite() {
       });
       if (!response.ok) throw new Error('Failed to fetch worksites');
       const data = await response.json();
-      console.log(data);
       setWorksites(data);
     } catch (error) {
       console.error('Error fetching worksites:', error);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -114,6 +114,20 @@ export default function Worksite() {
       place: '',
       description: '',
       skills: [],
+    });
+  };
+
+  const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && newSkill.trim()) {
+      setFormData({ ...formData, skills: [...formData.skills, newSkill.trim()] });
+      setNewSkill('');
+    }
+  };
+
+  const removeSkill = (index: number) => {
+    setFormData({
+      ...formData,
+      skills: formData.skills.filter((_, i) => i !== index),
     });
   };
 
@@ -213,6 +227,35 @@ export default function Worksite() {
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                     className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
                   />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label htmlFor="skills" className="text-xs font-normal mb-1">Compétences</label>
+                  <div className="flex flex-wrap gap-2 p-2 min-h-[42px] rounded bg-[#f7f9fc] border border-[#E5E5E5]">
+                    {formData.skills.map((skill, index) => (
+                      <div 
+                        key={index} 
+                        className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#E5E5E5] hover:border-[#007AFF] transition-colors"
+                      >
+                        <span className="text-sm">{skill}</span>
+                        <button
+                          onClick={() => removeSkill(index)}
+                          className="text-gray-400 hover:text-red-500 transition-colors"
+                          type="button"
+                          aria-label="Supprimer la compétence"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    <input 
+                      type="text"
+                      placeholder="Ajouter une compétence"
+                      value={newSkill}
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      onKeyDown={handleAddSkill}
+                      className="text-sm bg-transparent outline-none placeholder:text-xs flex-1 min-w-[150px] focus:placeholder:text-[#007AFF]"
+                    />
+                  </div>
                 </div>
               </div>
 
