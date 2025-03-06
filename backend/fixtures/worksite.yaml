@@ -7,3 +7,4 @@ App\Entity\Worksite:
     description: '<text(200)>'
     skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
     place: '<city()>'
+    manager: '@manager'

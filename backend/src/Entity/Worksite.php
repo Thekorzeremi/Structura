@@ -42,6 +42,10 @@ class Worksite
     #[Groups(['worksite:read', 'event:read'])]
     private ?string $place = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $manager = null;
+
     /**
      * @var Collection<int, Event>
      */
@@ -158,6 +162,17 @@ class Worksite
             }
         }
 
+        return $this;
+    }
+
+    public function getManager(): ?User
+    {
+        return $this->manager;
+    }
+
+    public function setManager(?User $manager): self
+    {
+        $this->manager = $manager;
         return $this;
     }
 }

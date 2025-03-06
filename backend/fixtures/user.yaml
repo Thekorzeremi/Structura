@@ -9,21 +9,21 @@ App\Entity\User:
     skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 2)>'
     job: 'Électricien'
     phone: '<phoneNumber()>'
-  manager_{1..5}:
+  manager:
     first_name: '<firstName()>'
     last_name: '<lastName()>'
     roles: ['ROLE_MANAGER']
-    email: '<email()>'
-    password: '<password()>'
+    email: 'manager@manager.manager'
+    password: '\$2y\$13\$V.FVzRKDHxai6nmzj411gOBoMEaxih4EQEs0I2NUTsnegWFeArMEa'
     skills: '<randomElements(["Gestion de projet", "Management", "Planification", "Coordination", "Budget"], 3)>'
     job: '<randomElement(["Chef de chantier", "Conducteur de travaux"])>'
     phone: '<phoneNumber()>'
-  boss_{1..5}:
+  boss:
     first_name: '<firstName()>'
     last_name: '<lastName()>'
     roles: ['ROLE_BOSS']
-    email: '<email()>'
-    password: '<password()>'
+    email: 'admin@admin.admin'
+    password: '\$2y\$13\$V.FVzRKDHxai6nmzj411gOBoMEaxih4EQEs0I2NUTsnegWFeArMEa'
     skills: '<randomElements(["Direction", "Stratégie", "Management", "Finance", "Développement"], 3)>'
     job: '<randomElement(["Directeur", "PDG", "Directeur des opérations"])>'
     phone: '<phoneNumber()>'

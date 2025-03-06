@@ -146,7 +146,8 @@ class EventController extends AbstractController
                     'start_date' => $worksite->getStartDate()->format('Y-m-d H:i:s'),
                     'end_date' => $worksite->getEndDate()->format('Y-m-d H:i:s'),
                     'description' => $worksite->getDescription(),
-                    'place' => $worksite->getPlace()
+                    'place' => $worksite->getPlace(),
+                    'manager' => $worksite->getManager()
                 ]
             ];
         }
