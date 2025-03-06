@@ -26,7 +26,8 @@ export default function People() {
     roles: [] as string[],
     skills: [] as string[]
   });
-  
+  const [newSkill, setNewSkill] = useState('');
+
   // Available role options
   const availableRoles = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WORKER'];
   // Available skill options
@@ -146,6 +147,7 @@ export default function People() {
       roles: [],
       skills: []
     });
+    setNewSkill('');
   };
 
   const handleRoleToggle = (role: string) => {
@@ -305,22 +307,42 @@ export default function People() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm text-gray-600 mb-2">Compétences</label>
-                <div className="flex flex-wrap gap-2">
-                  {availableSkills.map((skill) => (
-                    <div 
-                      key={skill}
-                      onClick={() => handleSkillToggle(skill)}
-                      className={`px-3 py-1 rounded-full text-sm cursor-pointer border ${
-                        formData.skills.includes(skill) 
-                          ? 'bg-[#007AFF] text-white border-[#007AFF]' 
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      {skill}
-                    </div>
-                  ))}
+              <div className="flex mt-4 gap-x-2 w-full">
+                <div className="flex flex-col w-full">
+                  <label htmlFor="skills" className="text-xs font-normal mb-1">Compétences</label>
+                  <div className="flex flex-wrap gap-2 p-2 min-h-[42px] rounded bg-[#f7f9fc] border border-[#E5E5E5]">
+                    {formData.skills.map((skill, index) => (
+                      <div 
+                        key={index} 
+                        className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#E5E5E5] hover:border-[#007AFF] transition-colors"
+                      >
+                        <span className="text-sm">{skill}</span>
+                        <button
+                          onClick={() => setFormData(prev => ({ ...prev, skills: prev.skills.filter((_, i) => i !== index) }))}
+                          className="text-gray-400 hover:text-red-500 transition-colors"
+                          type="button"
+                          aria-label="Supprimer la compétence"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                    <input 
+                      type="text"
+                      placeholder="Ajouter une compétence"
+                      value={newSkill}
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && newSkill.trim()) {
+                          if (!formData.skills.includes(newSkill.trim())) {
+                            setFormData(prev => ({ ...prev, skills: [...prev.skills, newSkill.trim()] }));
+                          }
+                          setNewSkill('');
+                        }
+                      }}
+                      className="text-sm bg-transparent outline-none placeholder:text-xs flex-1 min-w-[150px] focus:placeholder:text-[#007AFF]"
+                    />
+                  </div>
                 </div>
               </div>
 
