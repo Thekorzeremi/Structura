@@ -27,7 +27,7 @@ export default function Navbar() {
         : navbarItems;
 
     return (
-        <nav className="fixed left-0 top-0 h-screen w-[75px] flex flex-col items-center justify-between py-6">
+        <nav className="fixed left-0 top-0 h-screen w-[75px] flex flex-col items-center justify-between py-6 bg-[#f7f9fc]">
             <div className="absolute h-full top-0 w-[1px] bg-gray-300 left-[75px]"></div>
             <div className="flex flex-col items-center">
                 <img className="rounded-full w-[48px] h-[48px]" src="/logo.png" alt="logo" />
