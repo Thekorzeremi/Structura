@@ -128,7 +128,7 @@ export default function Assignment() {
             Aucune affectation trouvée
           </div>
         ) : (
-          <div className="p-8 bg-white rounded-lg grid gap-4">
+          <div className="p-8 bg-white rounded-lg grid gap-4 mt-4">
             <Select items={filterItems} value={filter} onChange={(value) => setFilter(value)} />
             {getFilteredEvents().map((event) => (
               <div
