@@ -1,13 +1,13 @@
 # fixtures/user.yaml
 App\Entity\User:
-  employe_{1..10}:
-    first_name: '<firstName()>'
-    last_name: '<lastName()>'
+  remi:
+    first_name: 'Remi'
+    last_name: 'KORZENIOWSKI'
     roles: ['ROLE_USER']
-    email: '<email()>'
-    password: '<password()>'
+    email: 'remi@remi.remi'
+    password: '\$2y\$13\$V.FVzRKDHxai6nmzj411gOBoMEaxih4EQEs0I2NUTsnegWFeArMEa'
     skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 2)>'
-    job: '<jobTitle()>'
+    job: 'Électricien'
     phone: '<phoneNumber()>'
   manager_{1..5}:
     first_name: '<firstName()>'

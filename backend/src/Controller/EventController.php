@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Entity\Worksite;
+use App\Repository\EventRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
@@ -80,6 +82,67 @@ class EventController extends AbstractController
         $data = $this->serializer->serialize($event, 'json', ['groups' => ['event:read']]);
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/me', name: 'get_my_events', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/events/me',
+        summary: 'Get events for a user by email',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'email', type: 'string')
+                ]
+            )
+        ),
+        tags: ['Events'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns events for the user',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(ref: '#/components/schemas/Event')
+                )
+            ),
+            new OA\Response(response: 404, description: 'User not found')
+        ]
+    )]
+    public function getMyEvents(Request $request, UserRepository $userRepository, EventRepository $eventRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'] ?? null;
+
+        if (!$email) {
+            return new JsonResponse(['error' => 'Email is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $userRepository->findOneBy(['email' => $email]);
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $events = $eventRepository->findBy(['user' => $user]);
+        $eventsData = [];
+
+        foreach ($events as $event) {
+            $eventsData[] = [
+                'id' => $event->getId(),
+                'type' => $event->getType(),
+                'status' => $event->getStatus(),
+                'start_date' => $event->getStartDate()->format('Y-m-d H:i:s'),
+                'end_date' => $event->getEndDate()->format('Y-m-d H:i:s'),
+                'user' => [
+                    'id' => $event->getUser()->getId(),
+                    'email' => $event->getUser()->getEmail(),
+                    'firstName' => $event->getUser()->getFirstName(),
+                    'lastName' => $event->getUser()->getLastName()
+                ]
+            ];
+        }
+
+        return new JsonResponse($eventsData);
     }
 
     #[Route('/', name: 'create_event', methods: ['POST'])]
