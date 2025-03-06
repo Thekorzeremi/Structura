@@ -70,8 +70,6 @@ class UserController extends AbstractController
         }
     }
 
-    
-
     #[Route('/{id}', name: 'get_user', methods: ['GET'])]
     #[OA\Get(
         path: '/api/users/{id}',
@@ -125,6 +123,10 @@ class UserController extends AbstractController
                     new OA\Property(property: 'last_name', type: 'string'),
                     new OA\Property(property: 'email', type: 'string', format: 'email'),
                     new OA\Property(property: 'password', type: 'string', format: 'password'),
+                    new OA\Property(property: 'job', type: 'string'),
+                    new OA\Property(property: 'phone', type: 'string'),
+                    new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string')),
+                    new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
                 ]
             )
         ),
@@ -158,6 +160,22 @@ class UserController extends AbstractController
         }
         if (isset($data['password'])) {
             $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
+        }
+        if (isset($data['job'])) {
+            $user->setJob($data['job']);
+        }
+        if (isset($data['phone'])) {
+            $user->setPhone($data['phone']);
+        }
+        if (isset($data['roles']) && is_array($data['roles'])) {
+            // Ensure ROLE_USER is always present
+            if (!in_array('ROLE_USER', $data['roles'])) {
+                $data['roles'][] = 'ROLE_USER';
+            }
+            $user->setRoles($data['roles']);
+        }
+        if (isset($data['skills']) && is_array($data['skills'])) {
+            $user->setSkills($data['skills']);
         }
 
         $this->entityManager->flush();
