@@ -1,5 +1,5 @@
 import { Settings, LogOut } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface ProfilModalProps {
@@ -8,10 +8,14 @@ interface ProfilModalProps {
 
 export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const modalItems = [
-    { icon: Settings, path: '/settings', name: 'Paramètres' },
+    { icon: Settings, name: 'Paramètres', onClick: () => {
+      setIsOpen(false);
+      navigate('/settings');
+    }},
     { icon: LogOut, name: 'Se déconnecter', onClick: () => { 
       logout();
       setIsOpen(false); 
@@ -23,7 +27,7 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
   return (
     <>
       <div className="fixed inset-0" onClick={() => setIsOpen(false)} />
-      <div className="absolute bottom-20 left-4 h-auto w-[200px] flex flex-col bg-white rounded-sm shadow z-50">
+      <div className="absolute bottom-20 left-4 h-auto w-[180px] flex flex-col bg-white rounded-sm shadow z-50">
         <div className="flex flex-row gap-x-3 ml-3 items-center p-2">
           <img className="rounded-full w-[28px] h-[28px]" src="/profile_pic.png" alt="logo" />
           <div className="flex flex-col items-start">
@@ -36,25 +40,14 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
         </div>
         <div className="w-auto ml-4">
           {modalItems.map((item, index) => (
-            item.path ? (
-              <Link
-                key={index}
-                to={item.path}
-                className="flex items-center no-underline p-2 gap-4 text-black text-sm hover:text-gray-900 h-[50px]"
-              >
-                <item.icon size={20} />
-                {item.name}
-              </Link>
-            ) : (
               <div
                 key={index}
                 onClick={item.onClick}
-                className="flex items-center cursor-pointer p-2 gap-4 text-red-500 text-sm hover:text-red-600 h-[50px]"
+                className="flex items-center cursor-pointer p-2 gap-4 text-black text-sm hover:text-red-600 h-[50px]"
               >
                 <item.icon size={20} />
                 {item.name}
               </div>
-            )
           ))}
         </div>
       </div>
