@@ -24,7 +24,7 @@ interface User {
 }
 
 export default function Worksite() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [worksites, setWorksites] = useState<Worksite[]>([]);
   const [managers, setManagers] = useState<User[]>([]);
   const [selectedWorksite, setSelectedWorksite] = useState<Worksite | null>(null);
@@ -163,7 +163,9 @@ export default function Worksite() {
 
   return (
     <div className="pl-8 pt-6">
-      <span className="text-3xl font-semibold">Chantiers</span>
+      <span className="text-3xl font-semibold">
+        {user?.roles?.includes('ROLE_ADMIN') ? 'Gestion des chantiers' : 'Chantiers'}
+      </span>
       {isLoading ? (
         <div className="flex items-center justify-center h-32">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#007AFF]"></div>

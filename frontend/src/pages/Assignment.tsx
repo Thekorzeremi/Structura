@@ -37,7 +37,7 @@ interface Event {
 const filterItems = [
   { name: `En cours`, value: 'current' },
   { name: 'Passé', value: 'past' },
-  { name: 'A venir', value: 'future' }
+  { name: 'A venir', value: 'future' },
 ];
 
 export default function Assignment() {
@@ -67,7 +67,7 @@ export default function Assignment() {
         setLoading(false);
       }
     };
-    
+
     fetchEvents();
   }, [userEmail]);
 
@@ -78,7 +78,7 @@ export default function Assignment() {
       .filter(event => {
         const endDate = parseISO(event.end_date);
         const startDate = parseISO(event.start_date);
-        
+
         switch (filter) {
           case 'current':
             return startDate <= now && endDate >= now;
@@ -109,28 +109,27 @@ export default function Assignment() {
 
   return (
     <div className="pl-8 pt-6">
-      <div className="flex flex-col gap-6">
-        <span className="text-3xl font-semibold">
-          {user?.roles?.some((role) => ['MANAGER', 'ADMIN'].includes(role))
-            ? 'Gestion affectations'
-            : 'Mes affectations'}
-        </span>
+      {user?.roles?.includes('ROLE_ADMIN') ? (
+        <div className="flex flex-col gap-6">
+          <span className="text-3xl font-semibold">Gestion affectations</span>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <span className="text-3xl font-semibold">Mes affectations</span>
+        </div> // Fermeture du div manquante
+      )}
 
-      </div>
-      
       <div className="mt-8">
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#007AFF]"></div>
           </div>
         ) : events.length === 0 ? (
-          <div className="text-gray-500 text-center py-8 text-sm">
-            Aucune affectation trouvée
-          </div>
+          <div className="text-gray-500 text-center py-8 text-sm">Aucune affectation trouvée</div>
         ) : (
           <div className="p-8 bg-white rounded-lg grid gap-4 mt-4">
-            <Select items={filterItems} value={filter} onChange={(value) => setFilter(value)} />
-            {getFilteredEvents().map((event) => (
+            <Select items={filterItems} value={filter} onChange={value => setFilter(value)} />
+            {getFilteredEvents().map(event => (
               <div
                 key={event.id}
                 className="bg-white rounded-lg p-4 shadow-sm border border-[#E5E5E5] hover:border-[#007AFF] transition-colors cursor-pointer"
@@ -139,17 +138,21 @@ export default function Assignment() {
                   setModalOpen(true);
                 }}
               >
-                <div className='flex items-center gap-4 justify-between'>
+                <div className="flex items-center gap-4 justify-between">
                   <div className="flex gap-4">
                     <img src={`/worksite/1.jpg`} className="w-12 h-12 object-cover rounded-full" />
-                    <div className='flex flex-col'>
-                      <span className='text-lg font-semibold'>{event.worksite.title}</span>
-                      <span className='text-md text-gray-500'>{event.worksite.place}</span>
+                    <div className="flex flex-col">
+                      <span className="text-lg font-semibold">{event.worksite.title}</span>
+                      <span className="text-md text-gray-500">{event.worksite.place}</span>
                     </div>
                   </div>
-                  <div className='flex flex-col'>
-                    <span className='text-xs text-gray-500 font-bold'>Du <span className='font-normal'>{event.start_date}</span></span>
-                    <span className='text-xs text-gray-500 font-bold'>Au <span className='font-normal'>{event.end_date}</span></span>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500 font-bold">
+                      Du <span className="font-normal">{event.start_date}</span>
+                    </span>
+                    <span className="text-xs text-gray-500 font-bold">
+                      Au <span className="font-normal">{event.end_date}</span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -157,7 +160,8 @@ export default function Assignment() {
           </div>
         )}
       </div>
-      <EventModal 
+
+      <EventModal
         event={selectedEvent || events[0]}
         isOpen={modalOpen}
         onClose={() => {
@@ -167,4 +171,5 @@ export default function Assignment() {
       />
     </div>
   );
+
 }
