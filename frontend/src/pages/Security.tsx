@@ -83,7 +83,7 @@ const Security = () => {
       }
       if (error.response && error.response.status === 401) {
         setError('Informations invalides');
-      } else {
+      } else if (error.response && error.response.status === 500) {
         setError('Une erreur est survenue')
       }
     }
