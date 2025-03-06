@@ -1,18 +1,89 @@
 # fixtures/event.yaml
 App\Entity\Event:
   # Affectations en cours (bleu #007AFF)
-  event_{1..9}:
+  event_1:
     type: 'assignment'
     status: ''
     start_date: '<dateTimeBetween("now", "+1 week")>'
     end_date: '<dateTimeBetween("+1 week", "+2 weeks")>'
     user: '@remi'
-    worksite: '@worksite_<numberBetween(1, 3)>'
+    worksite: '@worksite_1'
+  event_2:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("now", "+1 week")>'
+    end_date: '<dateTimeBetween("+1 week", "+2 weeks")>'
+    user: '@remi'
+    worksite: '@worksite_2  '
+  event_3:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("now", "+1 week")>'
+    end_date: '<dateTimeBetween("+1 week", "+2 weeks")>'
+    user: '@remi'
+    worksite: '@worksite_3'
+  event_4:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("now", "+1 week")>'
+    end_date: '<dateTimeBetween("+1 week", "+2 weeks")>'
+    user: '@remi'
+    worksite: '@worksite_4'
+  event_5:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("now", "+1 week")>'
+    end_date: '<dateTimeBetween("+1 week", "+2 weeks")>'
+    user: '@remi'
+    worksite: '@worksite_5'
+  event_6:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("now", "+1 week")>'
+    end_date: '<dateTimeBetween("+1 week", "+2 weeks")>'
+    user: '@remi'
+    worksite: '@worksite_6'
   # Affectations terminées (vert)
-  event_{10..19}:
+  event_7:
     type: 'assignment'
     status: ''
     start_date: '<dateTimeBetween("-1 week", "now")>'
     end_date: '<dateTimeBetween("now", "+1 day")>'
     user: '@remi'
-    worksite: '@worksite_<numberBetween(4, 6)>'
+    worksite: '@worksite_7'
+  event_8:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("-1 week", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 day")>'
+    user: '@remi'
+    worksite: '@worksite_8'
+  event_9:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("-1 week", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 day")>'
+    user: '@remi'
+    worksite: '@worksite_9'
+  event_10:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("-1 week", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 day")>'
+    user: '@remi'
+    worksite: '@worksite_10'
+  event_11:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("-1 week", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 day")>'
+    user: '@remi'
+    worksite: '@worksite_11'
+  event_12:
+    type: 'assignment'
+    status: ''
+    start_date: '<dateTimeBetween("-1 week", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 day")>'
+    user: '@remi'
+    worksite: '@worksite_12'
+  

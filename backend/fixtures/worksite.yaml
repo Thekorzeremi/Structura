@@ -1,10 +1,98 @@
 # fixtures/worksite.yaml
 App\Entity\Worksite:
-  worksite_{1..10}:
+  worksite_1:
     start_date: '<dateTimeBetween("-6 months", "now")>'
     end_date: '<dateTimeBetween("now", "+1 year")>'
-    title: '<sentence(3)>'
+    title: 'Chantier navale'
     description: '<text(200)>'
     skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
-    place: '<city()>'
+    place: 'Nantes'
+    manager: '@manager'
+  worksite_2:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: 'Centre commercial'
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Gagny'
+    manager: '@manager'
+  worksite_3:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: 'Partie communautaire'
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Lannoy'
+    manager: '@manager'
+  worksite_4:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: 'Chantier automobile'
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Reims'
+    manager: '@manager'
+  worksite_5:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: 'Appartements'
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Lannoy'
+    manager: '@manager'
+  worksite_6:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: "Rénovation d'un immeuble"
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Lyon'
+    manager: '@manager'
+  worksite_7:
+    start_date: '<dateTimeBetween("-6 months", "now")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: "Construction d'un centre commercial"
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Bordeaux'
+    manager: '@manager'
+  worksite_8:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: 'Travaux de rénovation'
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Toulouse'
+    manager: '@manager'
+  worksite_9:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: "Rénovation d'un bâtiment historique"
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Paris'
+    manager: '@manager'
+  worksite_10:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: "Construction d'un centre sportif"
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Marseille'
+    manager: '@manager'
+  worksite_11:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: "Rénovation d'un hôtel"
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Nice'
+    manager: '@manager'
+  worksite_12:
+    start_date: '<dateTimeBetween("now", "+1 year")>'
+    end_date: '<dateTimeBetween("now", "+1 year")>'
+    title: "Construction d'un immeuble de bureaux"
+    description: '<text(200)>'
+    skills: '<randomElements(["Plomberie", "Électricité", "Maçonnerie", "Peinture", "Menuiserie"], 3)>'
+    place: 'Strasbourg'
     manager: '@manager'
