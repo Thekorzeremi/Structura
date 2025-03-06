@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Psr\Log\LoggerInterface;
 
 #[Route('/api/users')]
 #[OA\Tag(name: 'Users')]
@@ -24,6 +25,7 @@ class UserController extends AbstractController
         private SerializerInterface $serializer,
         private UserPasswordHasherInterface $passwordHasher,
         private UserRepository $userRepository,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -300,8 +302,10 @@ class UserController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
+            $this->logger->info('[UserController] UpdateCurrentUser - Request received', ['data' => $data]);
             
             if (!isset($data['email']) || empty($data['email'])) {
+                $this->logger->error('[UserController] UpdateCurrentUser - Email is required');
                 return new JsonResponse(
                     ['error' => 'Email is required'], 
                     Response::HTTP_BAD_REQUEST
@@ -311,6 +315,7 @@ class UserController extends AbstractController
             $user = $this->userRepository->findOneBy(['email' => $data['email']]);
 
             if (!$user) {
+                $this->logger->error('[UserController] UpdateCurrentUser - User not found', ['email' => $data['email']]);
                 return new JsonResponse(
                     ['error' => 'User not found'], 
                     Response::HTTP_NOT_FOUND
@@ -319,6 +324,7 @@ class UserController extends AbstractController
 
             if (isset($data['firstName'])) {
                 if (empty(trim($data['firstName']))) {
+                    $this->logger->error('[UserController] UpdateCurrentUser - First name cannot be empty');
                     return new JsonResponse(
                         ['error' => 'First name cannot be empty'],
                         Response::HTTP_BAD_REQUEST
@@ -329,6 +335,7 @@ class UserController extends AbstractController
             
             if (isset($data['lastName'])) {
                 if (empty(trim($data['lastName']))) {
+                    $this->logger->error('[UserController] UpdateCurrentUser - Last name cannot be empty');
                     return new JsonResponse(
                         ['error' => 'Last name cannot be empty'],
                         Response::HTTP_BAD_REQUEST
@@ -339,7 +346,8 @@ class UserController extends AbstractController
             
             if (isset($data['phone'])) {
                 $phone = preg_replace('/[^0-9+]/', '', $data['phone']);
-                if (!preg_match('/^\+?[0-9]{10,}$/', $phone)) {
+                if (!empty($phone) && !preg_match('/^\+?[0-9]{10,}$/', $phone)) {
+                    $this->logger->error('[UserController] UpdateCurrentUser - Invalid phone number format');
                     return new JsonResponse(
                         ['error' => 'Invalid phone number format'],
                         Response::HTTP_BAD_REQUEST
@@ -354,6 +362,7 @@ class UserController extends AbstractController
             
             if (isset($data['skills'])) {
                 if (!is_array($data['skills'])) {
+                    $this->logger->error('[UserController] UpdateCurrentUser - Skills must be an array');
                     return new JsonResponse(
                         ['error' => 'Skills must be an array'],
                         Response::HTTP_BAD_REQUEST
@@ -364,21 +373,26 @@ class UserController extends AbstractController
             }
 
             $this->entityManager->flush();
+            $this->logger->info('[UserController] UpdateCurrentUser - User updated successfully');
 
             return new JsonResponse([
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
-                'job' => $user->getJob(),
-                'phone' => $user->getPhone(),
+                'job' => $user->getJob() ?? '',
+                'phone' => $user->getPhone() ?? '',
                 'roles' => $user->getRoles(),
-                'skills' => $user->getSkills()
+                'skills' => $user->getSkills() ?? []
             ]);
 
         } catch (\Exception $e) {
+            $this->logger->error('[UserController] UpdateCurrentUser - Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return new JsonResponse(
-                ['error' => 'An error occurred while updating the user'],
+                ['error' => $e->getMessage()],
                 Response::HTTP_BAD_REQUEST
             );
         }

@@ -86,6 +86,9 @@ final class SecurityController extends AbstractController
             $user->setEmail($data['email']);
             $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
             $user->setRoles(['ROLE_USER']);
+            $user->setSkills([]);
+            $user->setPhone('');
+            $user->setJob('');
             $entityManager->persist($user);
             $entityManager->flush();
             $this->logger->info('[SecurityController] Register - User registered !');
@@ -240,10 +243,10 @@ final class SecurityController extends AbstractController
         }
     }
 
-    #[Route('/api/delete-account', name: 'api_delete_account', methods: ['DELETE', 'OPTIONS'])]
+    #[Route('/api/anonymize-account', name: 'api_anonymize_account', methods: ['DELETE', 'OPTIONS'])]
     #[OA\Delete(
-        path: '/api/delete-account',
-        summary: 'Delete user account',
+        path: '/api/anonymize-account',
+        summary: 'Anonymize user account',
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -257,7 +260,7 @@ final class SecurityController extends AbstractController
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'Account successfully deleted',
+                description: 'Account successfully anonymized',
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: 'message', type: 'string'),
@@ -268,14 +271,14 @@ final class SecurityController extends AbstractController
             new OA\Response(response: 404, description: 'User not found'),
         ]
     )]
-    public function deleteAccount(
+    public function anonymizeAccount(
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
         try {
             $data = json_decode($request->getContent(), true);
-            $this->logger->info('[SecurityController] DeleteAccount - Request received');
+            $this->logger->info('[SecurityController] AnonymizeAccount - Request received');
 
             if (!isset($data['email'], $data['password'])) {
                 return $this->json(['error' => 'Informations manquantes'], Response::HTTP_BAD_REQUEST);
@@ -290,15 +293,24 @@ final class SecurityController extends AbstractController
                 return $this->json(['error' => 'Mot de passe incorrect'], Response::HTTP_UNAUTHORIZED);
             }
 
-            $entityManager->remove($user);
+            // Générer des données aléatoires pour l'anonymisation
+            $randomId = uniqid('deleted_');
+            $user->setEmail($randomId . '@anonymized.com');
+            $user->setFirstName('Anonyme');
+            $user->setLastName('Supprimé');
+            $user->setPhone('');
+            $user->setJob('');
+            $user->setSkills([]);
+            $user->setPassword($passwordHasher->hashPassword($user, bin2hex(random_bytes(20))));
+
             $entityManager->flush();
 
-            $this->logger->info('[SecurityController] DeleteAccount - Account successfully deleted');
-            return $this->json(['message' => 'Compte supprimé avec succès'], Response::HTTP_OK);
+            $this->logger->info('[SecurityController] AnonymizeAccount - Account successfully anonymized');
+            return $this->json(['message' => 'Compte anonymisé avec succès'], Response::HTTP_OK);
 
         } catch (\Exception $e) {
-            $this->logger->error('[SecurityController] DeleteAccount - Error', ['exception' => $e]);
-            return $this->json(['error' => 'Une erreur est survenue lors de la suppression du compte'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $this->logger->error('[SecurityController] AnonymizeAccount - Error', ['exception' => $e]);
+            return $this->json(['error' => 'Une erreur est survenue lors de l\'anonymisation du compte'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

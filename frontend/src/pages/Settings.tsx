@@ -94,14 +94,18 @@ export default function Settings() {
           email: userData.email,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          phone: userData.phone,
-          job: userData.job,
-          skills: userData.skills
+          phone: userData.phone ?? '',
+          job: userData.job ?? '',
+          skills: userData.skills ?? []
         })
       });
 
-      if (!response.ok) throw new Error('Failed to update user data');
       const data = await response.json();
+      
+      if (!response.ok) {
+        return;
+      }
+
       setUserData(data);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -145,7 +149,7 @@ export default function Settings() {
     try {
       setDeleteError('');
 
-      const response = await fetch('http://localhost:8000/api/delete-account', {
+      const response = await fetch('http://localhost:8000/api/anonymize-account', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
