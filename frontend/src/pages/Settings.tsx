@@ -1,9 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "../components/ui/Select";
+import { useAuth } from "../contexts/AuthContext";
+
+interface UserData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  job: string;
+  roles: string[];
+  skills: string[];
+}
 
 export default function Settings() {
+  const { token, user } = useAuth();
+  const decodedToken = token ? JSON.parse(atob(token.split('.')[1])) : null;
+  const userEmail = decodedToken?.username;
   const [filter, setFilter] = useState('profile');
-  const [skills, setSkills] = useState<string[]>(['Electricité', 'Equipe', 'Rigueur']);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [newSkill, setNewSkill] = useState('');
 
   const filterItems = [
@@ -11,17 +25,78 @@ export default function Settings() {
     { name: "Paramètres", value: 'settings'}
   ]
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (!userEmail || !token) return;
+
+        const response = await fetch('http://localhost:8000/api/users/me', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            email: userEmail
+          })
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch user data');
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [userEmail, token]);
+
   const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && newSkill.trim()) {
-      if (!skills.includes(newSkill.trim())) {
-        setSkills([...skills, newSkill.trim()]);
+      if (!userData?.skills.includes(newSkill.trim())) {
+        setUserData(prev => prev ? {
+          ...prev,
+          skills: [...prev.skills, newSkill.trim()]
+        } : null);
       }
       setNewSkill('');
     }
   };
 
   const removeSkill = (index: number) => {
-    setSkills(skills.filter((_, i) => i !== index));
+    setUserData(prev => prev ? {
+      ...prev,
+      skills: prev.skills.filter((_, i) => i !== index)
+    } : null);
+  };
+
+  const handleSave = async () => {
+    if (!userData || !token || !userEmail) return;
+    
+    try {
+      const response = await fetch('http://localhost:8000/api/users/me/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          phone: userData.phone,
+          job: userData.job,
+          skills: userData.skills
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to update user data');
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
   };
 
   return (
@@ -39,7 +114,8 @@ export default function Settings() {
                   <input 
                     type="text" 
                     id="first_name" 
-                    placeholder="Lilian" 
+                    value={userData?.firstName || ''}
+                    onChange={(e) => setUserData(prev => prev ? {...prev, firstName: e.target.value} : null)}
                     className="text-sm rounded bg-[#f2f2f2] border border-[#E5E5E5] placeholder:text-xs" 
                     name="first_name"
                   />
@@ -49,7 +125,8 @@ export default function Settings() {
                   <input 
                     type="text" 
                     id="last_name" 
-                    placeholder="Duvar" 
+                    value={userData?.lastName || ''}
+                    onChange={(e) => setUserData(prev => prev ? {...prev, lastName: e.target.value} : null)}
                     className="text-sm rounded bg-[#f2f2f2] border border-[#E5E5E5] placeholder:text-xs" 
                     name="last_name"
                   />
@@ -61,7 +138,8 @@ export default function Settings() {
                   <input 
                     type="text" 
                     id="phone" 
-                    placeholder="0612453215" 
+                    value={userData?.phone || ''}
+                    onChange={(e) => setUserData(prev => prev ? {...prev, phone: e.target.value} : null)}
                     className="text-sm rounded bg-[#f2f2f2] border border-[#E5E5E5] placeholder:text-xs" 
                     name="phone"
                   />
@@ -77,7 +155,7 @@ export default function Settings() {
                   <input 
                     type="text" 
                     id="roles" 
-                    placeholder="EMPLOYÉ" 
+                    value={userData?.roles?.[0] || ''}
                     className="text-sm rounded bg-[#f2f2f2] border border-[#E5E5E5] placeholder:text-xs" 
                     name="roles"
                     readOnly
@@ -88,7 +166,8 @@ export default function Settings() {
                   <input 
                     type="text" 
                     id="job" 
-                    placeholder="Electricien" 
+                    value={userData?.job || ''}
+                    onChange={(e) => setUserData(prev => prev ? {...prev, job: e.target.value} : null)}
                     className="text-sm rounded bg-[#f2f2f2] border border-[#E5E5E5] placeholder:text-xs" 
                     name="job"
                   />
@@ -98,7 +177,7 @@ export default function Settings() {
                 <div className="flex flex-col w-[50%]">
                   <label htmlFor="skills" className="text-xs font-normal mb-1">Compétences</label>
                   <div className="flex flex-wrap gap-2 p-2 min-h-[42px] rounded bg-[#f7f9fc] border border-[#E5E5E5]">
-                    {skills.map((skill, index) => (
+                    {userData?.skills.map((skill, index) => (
                       <div 
                         key={index} 
                         className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#E5E5E5] hover:border-[#007AFF] transition-colors"
@@ -125,6 +204,14 @@ export default function Settings() {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="mt-6">
+              <button 
+                onClick={handleSave}
+                className="px-4 py-2 bg-[#007AFF] text-white rounded hover:bg-[#0056b3] transition-colors"
+              >
+                Enregistrer les modifications
+              </button>
             </div>
           </div>
         )}

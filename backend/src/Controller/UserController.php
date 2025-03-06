@@ -178,7 +178,7 @@ class UserController extends AbstractController
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/me', name: 'get_current_user', methods: ['GET'], priority: 2)]
+    #[Route('/me', name: 'get_current_user', methods: ['POST'], priority: 2)]
     #[OA\Get(
         path: '/api/users/me',
         summary: 'Get current user information',
