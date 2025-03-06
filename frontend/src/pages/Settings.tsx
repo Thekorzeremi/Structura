@@ -28,6 +28,7 @@ export default function Settings() {
   const [deleteError, setDeleteError] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const navigate = useNavigate();
 
   const filterItems = [
@@ -85,6 +86,7 @@ export default function Settings() {
     if (!userData || !token || !userEmail) return;
     
     try {
+      setSaveStatus(null);
       setIsSaving(true);
       const response = await fetch('http://localhost:8000/api/users/me/update', {
         method: 'PUT',
@@ -105,14 +107,18 @@ export default function Settings() {
       const data = await response.json();
       
       if (!response.ok) {
+        setSaveStatus({ message: data.error || 'Une erreur est survenue', type: 'error' });
         return;
       }
 
       setUserData(data);
+      setSaveStatus({ message: 'Modifications enregistrées', type: 'success' });
     } catch (error) {
       console.error('Error updating user data:', error);
+      setSaveStatus({ message: 'Une erreur est survenue', type: 'error' });
     } finally {
       setIsSaving(false);
+      setTimeout(() => setSaveStatus(null), 3000);
     }
   };
 
@@ -298,7 +304,16 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            <div className="w-1/2 flex items-start justify-end">
+            <div className="w-1/2 flex items-start justify-end gap-4">
+              {saveStatus && (
+                <span className={`text-xs mt-2 ${
+                  saveStatus.type === 'success' 
+                    ? 'text-green-600' 
+                    : 'text-red-600'
+                }`}>
+                  {saveStatus.message}
+                </span>
+              )}
               <button 
                 onClick={handleSave}
                 disabled={isSaving}
