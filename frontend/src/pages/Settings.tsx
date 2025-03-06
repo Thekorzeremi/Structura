@@ -428,7 +428,7 @@ export default function Settings() {
                     Attention : L'annonymisation de votre compte est irréversible. Toutes vos données seront définitivement supprimées.
                   </p>
                   {!showDeleteConfirm ? (
-                    <div className="flex justify-end">
+                    <div className="flex justify-start">
                       <button
                         onClick={() => setShowDeleteConfirm(true)}
                         className="px-4 py-2 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
