@@ -22,7 +22,7 @@ class CorsListener implements EventSubscriberInterface
         if ($request->getMethod() === Request::METHOD_OPTIONS) {
             $response = new Response();
             $response->headers->set('Access-Control-Allow-Origin', '*');
-            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
             $response->headers->set('Access-Control-Allow-Headers', '*');
             $response->headers->set('Access-Control-Max-Age', '3600');
             $event->setResponse($response);
@@ -37,7 +37,7 @@ class CorsListener implements EventSubscriberInterface
 
         $response = $event->getResponse();
         $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS');
         $response->headers->set('Access-Control-Allow-Headers', '*');
     }
 
