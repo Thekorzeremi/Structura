@@ -26,6 +26,7 @@ const Security = () => {
   const [rememberMe, setRememberMe] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -38,6 +39,7 @@ const Security = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
+    setIsLoading(true)
     
     try {
       const endpoint = registerMode ? '/api/register' : '/api/login_check'
@@ -86,6 +88,8 @@ const Security = () => {
       } else if (error.response && error.response.status === 500) {
         setError('Une erreur est survenue')
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -199,9 +203,16 @@ const Security = () => {
                 </div>
                 <button 
                   type="submit" 
-                  className="text-white rounded text-sm py-2 my-2 bg-[#007AFF] w-full hover:bg-[#0056b3] transition-colors"
+                  disabled={isLoading}
+                  className="text-white rounded text-sm py-2 my-2 bg-[#007AFF] w-full hover:bg-[#0056b3] transition-colors relative"
                 >
-                  {registerMode ? "S'inscrire" : "Se connecter"}
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    </div>
+                  ) : (
+                    registerMode ? "S'inscrire" : "Se connecter"
+                  )}
                 </button>
                </div>
             </div>
