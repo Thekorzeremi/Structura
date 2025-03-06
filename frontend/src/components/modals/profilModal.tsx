@@ -43,7 +43,7 @@ export default function Profil_modal({ setIsOpen }: ProfilModalProps) {
               <div
                 key={index}
                 onClick={item.onClick}
-                className="flex items-center cursor-pointer p-2 gap-4 text-black text-sm hover:text-red-600 h-[50px]"
+                className="flex items-center cursor-pointer p-2 gap-4 text-black text-sm hover:text-gray-500 h-[50px]"
               >
                 <item.icon size={20} />
                 {item.name}

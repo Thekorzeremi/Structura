@@ -85,6 +85,7 @@ final class SecurityController extends AbstractController
             $user->setLastName($data['last_name']);
             $user->setEmail($data['email']);
             $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
+            $user->setRoles(['ROLE_USER']);
             $entityManager->persist($user);
             $entityManager->flush();
             $this->logger->info('[SecurityController] Register - User registered !');
