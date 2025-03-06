@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use App\Repository\UserRepository;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +23,7 @@ class UserController extends AbstractController
         private EntityManagerInterface $entityManager,
         private SerializerInterface $serializer,
         private UserPasswordHasherInterface $passwordHasher,
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -47,6 +49,8 @@ class UserController extends AbstractController
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
+
+    
 
     #[Route('/{id}', name: 'get_user', methods: ['GET'])]
     #[OA\Get(
@@ -172,5 +176,73 @@ class UserController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/me', name: 'get_current_user', methods: ['GET'], priority: 2)]
+    #[OA\Get(
+        path: '/api/users/me',
+        summary: 'Get current user information',
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(
+                name: 'email',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(type: 'string', format: 'email')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns the user information',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer'),
+                        new OA\Property(property: 'email', type: 'string'),
+                        new OA\Property(property: 'firstName', type: 'string'),
+                        new OA\Property(property: 'lastName', type: 'string'),
+                        new OA\Property(property: 'phone', type: 'string'),
+                        new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string')),
+                        new OA\Property(property: 'skills', type: 'array', items: new OA\Items(type: 'string'))
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Email is required'),
+            new OA\Response(response: 404, description: 'User not found')
+        ]
+    )]
+    public function getCurrentUser(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $email = $data['email'] ?? null;       
+
+        if (!$email) {
+            return new JsonResponse(
+                ['error' => 'Email is required'], 
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        
+        $user = $this->userRepository->findOneBy(['email' => $email]);
+
+        
+        if (!$user) {
+            return new JsonResponse(
+                ['error' => 'User not found'], 
+                Response::HTTP_NOT_FOUND
+            );
+        }
+        
+        $responseData = [
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'phone' => $user->getPhone(),
+            'roles' => $user->getRoles(),
+            'skills' => $user->getSkills()
+        ];
+        
+        return new JsonResponse($responseData);
     }
 }
