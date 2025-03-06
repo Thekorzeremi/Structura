@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 
 interface Worksite {
   id: number;
@@ -11,11 +12,19 @@ interface Worksite {
   place: string;
   description?: string;
   skills: string[];
+  manager_id?: number;
+}
+
+interface User {
+  id: number;
+  name: string;
+  roles: string[];
 }
 
 export default function Worksite() {
   const { token } = useAuth();
   const [worksites, setWorksites] = useState<Worksite[]>([]);
+  const [managers, setManagers] = useState<User[]>([]); 
   const [selectedWorksite, setSelectedWorksite] = useState<Worksite | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -24,13 +33,15 @@ export default function Worksite() {
     place: '',
     description: '',
     skills: [] as string[],
+    manager_id: undefined as number | undefined,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [newSkill, setNewSkill] = useState(''); 
+  const [newSkill, setNewSkill] = useState('');
 
   useEffect(() => {
     fetchWorksites();
+    fetchManagers();
   }, []);
 
   const fetchWorksites = async () => {
@@ -48,6 +59,21 @@ export default function Worksite() {
       console.error('Error fetching worksites:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchManagers = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/worksites/managers', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error('Failed to fetch managers');
+      const data = await response.json();
+      setManagers(data);
+    } catch (error) {
+      console.error('Error fetching managers:', error);
     }
   };
 
@@ -101,6 +127,7 @@ export default function Worksite() {
       place: worksite.place,
       description: worksite.description || '',
       skills: worksite.skills,
+      manager_id: worksite.manager_id,
     });
     setIsModalOpen(true);
   };
@@ -114,6 +141,7 @@ export default function Worksite() {
       place: '',
       description: '',
       skills: [],
+      manager_id: undefined,
     });
   };
 
@@ -156,15 +184,15 @@ export default function Worksite() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => openEditModal(worksite)}
-                    className="bg-[#007AFF] text-white px-3 py-1 rounded"
+                    className="border border-yellow-500 text-yellow-500 px-2 py-2 rounded"
                   >
-                    Edit
+                    <PencilIcon size={20} />
                   </button>
                   <button
                     onClick={() => handleDeleteWorksite(worksite.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    className="border border-red-500 text-red-500 px-2 py-2 rounded"
                   >
-                    Delete
+                    <TrashIcon size={20} />
                   </button>
                 </div>
               </div>
@@ -256,6 +284,19 @@ export default function Worksite() {
                       className="text-sm bg-transparent outline-none placeholder:text-xs flex-1 min-w-[150px] focus:placeholder:text-[#007AFF]"
                     />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">Manager</label>
+                  <select
+                    value={formData.manager_id !== undefined ? formData.manager_id.toString() : ''}
+                    onChange={(e) => setFormData({...formData, manager_id: e.target.value ? Number(e.target.value) : undefined})}
+                    className="w-full p-2 border border-[#E5E5E5] rounded focus:outline-none focus:border-[#007AFF]"
+                  >
+                    <option value="">Select a manager</option>
+                    {managers.map((manager) => (
+                      <option key={manager.id} value={manager.id.toString()}>{manager.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

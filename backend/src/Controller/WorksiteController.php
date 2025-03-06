@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Worksite;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Attributes as OA;
@@ -59,7 +60,7 @@ class WorksiteController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/{id}', name: 'get_worksite', methods: ['GET'])]
+    #[Route('/{id<\d+>}', name: 'get_worksite', methods: ['GET'])]
     #[OA\Get(
         path: '/api/worksites/{id}',
         summary: 'Get a worksite by ID',
@@ -254,5 +255,47 @@ class WorksiteController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/managers', name: 'get_managers', methods: ['GET'])]
+    #[OA\Get(
+        path: '/managers',
+        summary: 'Get all managers',
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns all users with ROLE_MANAGER',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer'),
+                            new OA\Property(property: 'name', type: 'string'),
+                            new OA\Property(property: 'roles', type: 'array', items: new OA\Items(type: 'string')),
+                        ]
+                    )
+                )
+            ),
+        ]
+    )]
+    public function getManagers(): JsonResponse
+    {
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $managers = $userRepository->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_MANAGER%')
+            ->getQuery()
+            ->getResult();
+
+        $formattedManagers = array_map(function ($manager) {
+            return [
+                'id' => $manager->getId(),
+                'first_name' => $manager->getFirstName(),
+                'last_name' => $manager->getLastName(),
+                'roles' => $manager->getRoles(),
+            ];
+        }, $managers);
+
+        return new JsonResponse($formattedManagers, Response::HTTP_OK);
     }
 }
