@@ -163,9 +163,22 @@ export default function Worksite() {
 
   return (
     <div className="pl-8 pt-6">
-      <span className="text-3xl font-semibold">
-        {user?.roles?.includes('ROLE_ADMIN') ? 'Gestion des chantiers' : 'Chantiers'}
-      </span>
+      <div className="flex justify-between items-center">
+        <span className="text-3xl font-semibold">
+          {user?.roles?.includes('ROLE_ADMIN') ? 'Gestion des chantiers' : 'Chantiers'}
+        </span>
+        {user?.roles?.includes('ROLE_ADMIN') && (
+          <button
+            onClick={() => {
+              resetForm();
+              setIsModalOpen(true);
+            }}
+            className="mr-8 px-4 py-2 bg-[#007AFF] text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Créer un chantier
+          </button>
+        )}
+      </div>
       {isLoading ? (
         <div className="flex items-center justify-center h-32">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#007AFF]"></div>
