@@ -44,5 +44,4 @@ npx prettier --write .
 npx prettier --write assets/controllers.json
 
 ## API
-Please add this in **access_control** section in **config/packages/security.yaml** :  
 See http://localhost:8000/api/doc/ for the API documentation.
