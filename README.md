@@ -44,4 +44,6 @@ npx prettier --write .
 npx prettier --write assets/controllers.json
 
 ## API
+Please add this in **access_control** section in **config/packages/security.yaml** :
+- { path: ^/api/doc, roles: PUBLIC_ACCESS }
 See http://localhost:8000/api/doc/ for the API documentation.
